@@ -1,0 +1,171 @@
+[gd_scene load_steps=21 format=3 uid="uid://cwxxcb8vw60g0"]
+
+[ext_resource type="Script" path="res://addons/CSharpDockableContainer/DockableContainer.cs" id="1_17516"]
+[ext_resource type="Script" path="res://addons/CSharpDockableContainer/DockableLayoutPanel.cs" id="2_3imgm"]
+[ext_resource type="Script" path="res://addons/CSharpDockableContainer/DockableLayoutSplit.cs" id="3_xdfrt"]
+[ext_resource type="Script" path="res://addons/CSharpDockableContainer/DockableLayout.cs" id="4_t04e6"]
+
+[sub_resource type="Resource" id="Resource_wnc6s"]
+resource_name = "Tabs"
+script = ExtResource("2_3imgm")
+Names = ["ColorRect3"]
+CurrentTab = 0
+
+[sub_resource type="Resource" id="Resource_o6t17"]
+resource_name = "Tabs"
+script = ExtResource("2_3imgm")
+Names = ["ColorRect4"]
+CurrentTab = 0
+
+[sub_resource type="Resource" id="Resource_bvtap"]
+resource_name = "Split"
+script = ExtResource("3_xdfrt")
+Direction = 1
+Percent = 0.5
+First = SubResource("Resource_wnc6s")
+Second = SubResource("Resource_o6t17")
+
+[sub_resource type="Resource" id="Resource_asikx"]
+resource_name = "Tabs"
+script = ExtResource("2_3imgm")
+Names = ["ColorRect"]
+CurrentTab = 0
+
+[sub_resource type="Resource" id="Resource_20kno"]
+resource_name = "Tabs"
+script = ExtResource("2_3imgm")
+Names = ["ColorRect2"]
+CurrentTab = 0
+
+[sub_resource type="Resource" id="Resource_0ps84"]
+resource_name = "Split"
+script = ExtResource("3_xdfrt")
+Direction = 1
+Percent = 0.5
+First = SubResource("Resource_asikx")
+Second = SubResource("Resource_20kno")
+
+[sub_resource type="Resource" id="Resource_4w7vp"]
+resource_name = "Split"
+script = ExtResource("3_xdfrt")
+Direction = 0
+Percent = 0.5
+First = SubResource("Resource_bvtap")
+Second = SubResource("Resource_0ps84")
+
+[sub_resource type="Resource" id="Resource_wdu88"]
+resource_name = "Layout"
+script = ExtResource("4_t04e6")
+Root = SubResource("Resource_4w7vp")
+HiddenTabs = {}
+
+[sub_resource type="Resource" id="Resource_ere23"]
+resource_name = "Tabs"
+script = ExtResource("2_3imgm")
+Names = ["ColorRect"]
+CurrentTab = 0
+
+[sub_resource type="Resource" id="Resource_3i7h7"]
+resource_name = "Tabs"
+script = ExtResource("2_3imgm")
+Names = ["DockableContainer"]
+CurrentTab = 0
+
+[sub_resource type="Resource" id="Resource_jr52w"]
+resource_name = "Split"
+script = ExtResource("3_xdfrt")
+Direction = 1
+Percent = 0.5
+First = SubResource("Resource_ere23")
+Second = SubResource("Resource_3i7h7")
+
+[sub_resource type="Resource" id="Resource_6xl3x"]
+resource_name = "Tabs"
+script = ExtResource("2_3imgm")
+Names = ["ColorRect2"]
+CurrentTab = 0
+
+[sub_resource type="Resource" id="Resource_j8xce"]
+resource_name = "Split"
+script = ExtResource("3_xdfrt")
+Direction = 0
+Percent = 0.5
+First = SubResource("Resource_jr52w")
+Second = SubResource("Resource_6xl3x")
+
+[sub_resource type="Resource" id="Resource_1k6r1"]
+resource_name = "Layout"
+script = ExtResource("4_t04e6")
+Root = SubResource("Resource_j8xce")
+HiddenTabs = {}
+
+[sub_resource type="Resource" id="Resource_fbqgy"]
+resource_name = "Tabs"
+script = ExtResource("2_3imgm")
+Names = ["ColorRect2", "ColorRect"]
+CurrentTab = 0
+
+[sub_resource type="Resource" id="Resource_nu162"]
+resource_name = "Layout"
+script = ExtResource("4_t04e6")
+Root = SubResource("Resource_fbqgy")
+HiddenTabs = {}
+
+[node name="Testing" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="DockableContainer" type="Container" parent="."]
+layout_mode = 0
+offset_right = 1148.0
+offset_bottom = 643.0
+script = ExtResource("1_17516")
+Layout = SubResource("Resource_wdu88")
+CloneLayoutOnReady = false
+
+[node name="ColorRect" type="ColorRect" parent="DockableContainer"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+
+[node name="ColorRect2" type="ColorRect" parent="DockableContainer"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+
+[node name="ColorRect3" type="ColorRect" parent="DockableContainer"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+
+[node name="ColorRect4" type="ColorRect" parent="DockableContainer"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+
+[node name="DockableContainer2" type="Container" parent="."]
+layout_mode = 0
+offset_left = -522.0
+offset_top = 21.0
+offset_right = -99.0
+offset_bottom = 634.0
+script = ExtResource("1_17516")
+Layout = SubResource("Resource_1k6r1")
+
+[node name="ColorRect" type="ColorRect" parent="DockableContainer2"]
+layout_mode = 2
+
+[node name="ColorRect2" type="ColorRect" parent="DockableContainer2"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+
+[node name="DockableContainer" type="Container" parent="DockableContainer2"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+script = ExtResource("1_17516")
+Layout = SubResource("Resource_nu162")
+
+[node name="ColorRect" type="ColorRect" parent="DockableContainer2/DockableContainer"]
+visible = false
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+
+[node name="ColorRect2" type="ColorRect" parent="DockableContainer2/DockableContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
