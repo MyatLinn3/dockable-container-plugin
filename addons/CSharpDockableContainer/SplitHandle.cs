@@ -14,15 +14,15 @@ public partial class SplitHandle : Control
 	public Vector2 SecondMinimumSize;
 
 	Rect2 ParentRect;
-	bool MouseHovering;
-	bool Dragging;
+	bool MouseHovering = false;
+	bool Dragging = false;
 
 	public override void _Draw()
 	{
 		string themeClass = SPLIT_THEME_CLASS[LayoutSplit.Direction];
 		Texture2D icon = GetThemeIcon("grabber",themeClass);
 		bool autohide = Convert.ToBoolean(GetThemeConstant("autohide",themeClass));
-		if((icon == null) | (autohide && !MouseHovering))
+		if((icon == null) || (autohide && !MouseHovering))
 		{
 			return;
 		}
@@ -61,7 +61,7 @@ public partial class SplitHandle : Control
 			{
 				QueueRedraw();
 			}
-			else if(what == NotificationMouseExit)
+		else if(what == NotificationMouseExit)
 			{
 				MouseHovering = false;
 				SetSplitCursor(false);
@@ -70,7 +70,7 @@ public partial class SplitHandle : Control
 					QueueRedraw();
 				}
 			}
-			else if(what == NotificationFocusExit)
+		else if(what == NotificationFocusExit)
 			{
 				Dragging = false;
 			}
@@ -78,11 +78,11 @@ public partial class SplitHandle : Control
 	}
 	
 	public Vector2 GetLayoutMinimumSize(){
-		if (LayoutSplit != null)
+		if (LayoutSplit == null)
 		{
 			return Vector2.Zero;
 		}
-		int seperation = GetThemeConstant("seperation",SPLIT_THEME_CLASS[LayoutSplit.Direction]);
+		var seperation = GetThemeConstant("separation",SPLIT_THEME_CLASS[LayoutSplit.Direction]);
 		if (LayoutSplit.IsHorizontal())
 		{
 			return new Vector2(
@@ -112,7 +112,7 @@ public partial class SplitHandle : Control
 	public Godot.Collections.Dictionary<string, Rect2> GetSplitRects(Rect2 rect)
 	{
 		ParentRect = rect;
-		int separation = GetThemeConstant("separation",SPLIT_THEME_CLASS[LayoutSplit.Direction]);
+		var separation = GetThemeConstant("separation",SPLIT_THEME_CLASS[LayoutSplit.Direction]);
 		Vector2 origin = rect.Position;
 		float percent = LayoutSplit.Percent;
 		if (LayoutSplit.IsHorizontal())
@@ -137,7 +137,7 @@ public partial class SplitHandle : Control
 				FirstMinimumSize.Y,
 				rect.Size.Y - SecondMinimumSize.Y - separation
 			);
-			float second_height = rect.Size.X - split_offset - separation;
+			float second_height = rect.Size.Y - split_offset - separation;
 			return new Godot.Collections.Dictionary<string, Rect2>(){
 				{"first",new Rect2(origin.X, origin.Y, rect.Size.X, split_offset)},
 				{"self",new Rect2(origin.X, origin.Y  + split_offset, rect.Size.X, separation)},

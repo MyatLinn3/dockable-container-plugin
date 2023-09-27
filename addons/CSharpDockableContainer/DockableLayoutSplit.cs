@@ -44,15 +44,15 @@ public partial class DockableLayoutSplit : DockableLayoutNode
 	private double _Percent = 0.5;
 	private DockableLayoutNode _First = new DockableLayoutPanel();
 	private DockableLayoutNode _Second = new DockableLayoutPanel();
-	public void SetFirst(DockableLayoutNode value)
+	public void SetFirst(DockableLayoutNode @value)
 	{
-		if (value == null)
+		if (@value == null)
 		{
 			_First = new DockableLayoutPanel();
 		}
 		else
 		{
-			_First = value;
+			_First = @value;
 		}
 		_First.Parent = this;
 		EmitTreeChanged();
@@ -63,15 +63,15 @@ public partial class DockableLayoutSplit : DockableLayoutNode
 		return _First;
 	}
 
-	public void SetSecond(DockableLayoutNode value)
+	public void SetSecond(DockableLayoutNode @value)
 	{
-		if (value == null)
+		if (@value == null)
 		{
 			_Second = new DockableLayoutPanel();
 		}
 		else
 		{
-			_Second = value;
+			_Second = @value;
 		}
 		_Second.Parent = this;
 		EmitTreeChanged();
@@ -81,11 +81,11 @@ public partial class DockableLayoutSplit : DockableLayoutNode
 	{
 		return _Second;
 	}
-	public void SetDirection(int value)
+	public void SetDirection(int @value)
 	{
-		if(value != Direction)
+		if(@value != Direction)
 		{
-			_Direction = value;
+			_Direction = @value;
 			EmitTreeChanged();
 		}
 	}
@@ -94,9 +94,9 @@ public partial class DockableLayoutSplit : DockableLayoutNode
 	{
 		return _Direction;
 	}
-	public void SetPercent(float value)
+	public void SetPercent(float @value)
 	{
-		float clampedValue = Mathf.Clamp(value,0,1);
+		float clampedValue = Mathf.Clamp(@value,0,1);
 		if (!Mathf.IsEqualApprox(_Percent,clampedValue))
 		{
 			_Percent = clampedValue;

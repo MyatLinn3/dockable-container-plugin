@@ -517,15 +517,15 @@ public partial class DockableContainer : Container
 				}
 				else if(firstResult is SplitHandle)
 				{
-					split.FirstMinimumSize = (firstResult as SplitHandle).GetLayoutMinimumSize();
+					split.FirstMinimumSize = ((SplitHandle)firstResult).GetLayoutMinimumSize();
 				}
 				if (secondResult is DockablePanel)
 				{
-					split.SecondMinimumSize = (secondResult as DockablePanel).GetLayoutMinimumSize();
+					split.SecondMinimumSize = ((DockablePanel)secondResult).GetLayoutMinimumSize();
 				}
 				else if(secondResult is SplitHandle)
 				{
-					split.SecondMinimumSize = (secondResult as SplitHandle).GetLayoutMinimumSize();
+					split.SecondMinimumSize = ((SplitHandle)secondResult).GetLayoutMinimumSize();
 				}
 				result.Add(split);
 				return split;
