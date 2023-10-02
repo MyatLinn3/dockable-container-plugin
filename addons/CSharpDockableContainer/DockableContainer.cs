@@ -1,3 +1,4 @@
+using System.Linq;
 using Godot;
 
 [Tool]
@@ -11,11 +12,8 @@ public partial class DockableContainer : Container
 		set
 		{
 			_TabAlign = value;
-			for (var i = 1;i<_PanelContainer.GetChildCount();i++)
-			{
-				var panel =  _PanelContainer.GetChild(i) as DockablePanel;
-				panel.TabAlignment = value;
-			}
+			foreach (var dockablePanel in _PanelContainer.GetChildren().OfType<DockablePanel>())
+				dockablePanel.TabAlignment = value;
 		}
 	} 
 
@@ -26,11 +24,8 @@ public partial class DockableContainer : Container
 		set
 		{
 			_UseHiddenTabsForMinSize = value;
-			for (var i = 1;i<_PanelContainer.GetChildCount();i++)
-			{
-				var panel =  _PanelContainer.GetChild(i) as DockablePanel;
-				panel.UseHiddenTabsForMinSize = value;
-			}
+			foreach (var dockablePanel in _PanelContainer.GetChildren().OfType<DockablePanel>())
+				dockablePanel.UseHiddenTabsForMinSize = value;
 		}
 	}
 
@@ -41,11 +36,8 @@ public partial class DockableContainer : Container
 		set
 		{
 			_TabsVisible = value;
-			for (var i = 1;i<_PanelContainer.GetChildCount();i++)
-			{
-				var panel = _PanelContainer.GetChild(i) as DockablePanel;
-				panel.TabsVisible = value;
-			}
+			foreach (var dockablePanel in _PanelContainer.GetChildren().OfType<DockablePanel>())
+				dockablePanel.TabsVisible = value;
 		}
 	}
 
@@ -286,11 +278,8 @@ public partial class DockableContainer : Container
 	public void SetTabAlignment(TabBar.AlignmentMode value)
 	{
 		_TabAlign = value;
-		for (var i = 1;i<_PanelContainer.GetChildCount();i++)
-		{
-			var panel = _PanelContainer.GetChild(i);
-			(panel as TabContainer).TabAlignment= value;
-		}
+		foreach (var tabContainer in _PanelContainer.GetChildren().OfType<TabContainer>())
+			tabContainer.TabAlignment= value;
 	}
 
 	public int GetTabAlign()
@@ -301,11 +290,8 @@ public partial class DockableContainer : Container
 	public void SetUseHiddenTabsForMinSize(bool value)
 	{
 		_UseHiddenTabsForMinSize = value;
-		for (var i = 1;i<_PanelContainer.GetChildCount();i++)
-		{
-			var panel = _PanelContainer.GetChild(i) as DockableContainer;
-			panel.UseHiddenTabsForMinSize = value;
-		}
+		foreach (var dockableContainer in _PanelContainer.GetChildren().OfType<DockableContainer>())
+			dockableContainer.UseHiddenTabsForMinSize = value;
 	}
 
 	public bool GetUseHiddenTabsForMinSize()
@@ -326,29 +312,15 @@ public partial class DockableContainer : Container
 	public Godot.Collections.Array<Control> GetTabs()
 	{
 		var tabs = new Godot.Collections.Array<Control>();
-		for (var i = 0;i<GetChildCount();i++)
-		{
-			var child = GetChild(i) as Control;
-			if (_IsManagedNode(child))
-			{
-				tabs.Add(child);
-			}
-		}
+		foreach (var control in GetChildren().OfType<Control>())
+			if (_IsManagedNode(control))
+				tabs.Add(control);
 		return tabs;
 	}
 
 	public int GetTabCount()
 	{
-		var count = 0;
-		for (var i = 0;i<GetChildCount();i++)
-		{
-			var child = GetChild(i);
-			if (_IsManagedNode(child))
-			{
-				count += 1;
-			}
-		}
-		return count;
+		return GetChildren().Count(_IsManagedNode);
 	}
 
 	public bool _CanHandleDragData(Variant data)
