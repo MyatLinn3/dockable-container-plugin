@@ -38,12 +38,11 @@ public partial class SplitHandle : Control
 			case InputEventMouseButton button when button.ButtonIndex == MouseButton.Left:
 			{
 				Dragging = button.IsPressed();
-				switch (button.DoubleClick)
+				LayoutSplit.Percent = button.DoubleClick switch
 				{
-					case true:
-						LayoutSplit.Percent = 0.5f;
-						break;
-				}
+					true => 0.5f,
+					_ => LayoutSplit.Percent
+				};
 
 				break;
 			}
@@ -120,15 +119,11 @@ public partial class SplitHandle : Control
 
 	public void SetSplitCursor(bool value)
 	{
-		switch (value)
+		MouseDefaultCursorShape = value switch
 		{
-			case true:
-				MouseDefaultCursorShape = SPLIT_MOUSE_CURSOR_SHAPE[LayoutSplit.Direction];
-				break;
-			default:
-				MouseDefaultCursorShape = CursorShape.Arrow;
-				break;
-		}
+			true => SPLIT_MOUSE_CURSOR_SHAPE[LayoutSplit.Direction],
+			_ => CursorShape.Arrow
+		};
 	}
 
 	public Godot.Collections.Dictionary<string, Rect2> GetSplitRects(Rect2 rect,String s="")

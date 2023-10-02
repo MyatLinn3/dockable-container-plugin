@@ -24,13 +24,11 @@ public partial class DockableLayoutPanel : DockableLayoutNode
 	{
 		get
 		{
-			switch (Names.Count)
+			return Names.Count switch
 			{
-				case 0:
-					return -1;
-				default:
-					return (int)Math.Clamp(_CurrentTab,0,_Names.Count-1);
-			}
+				0 => -1,
+				_ => Math.Clamp(_CurrentTab, 0, _Names.Count - 1)
+			};
 		}
 		set
 		{

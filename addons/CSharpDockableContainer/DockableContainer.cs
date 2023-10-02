@@ -264,12 +264,11 @@ public partial class DockableContainer : Container
 
 	public void SetLayout(DockableLayout value)
 	{
-		switch (value)
+		value = value switch
 		{
-			case null:
-				value = new DockableLayout();
-				break;
-		}
+			null => new DockableLayout(),
+			_ => value
+		};
 		if (value == _Layout)
 		{
 			return;
@@ -542,24 +541,18 @@ public partial class DockableContainer : Container
 					var split = _GetSplit(_CurrentSplitIndex);
 					_CurrentSplitIndex += 1;
 					split.LayoutSplit = node;
-					switch (firstResult)
+					split.FirstMinimumSize = firstResult switch
 					{
-						case DockablePanel panel:
-							split.FirstMinimumSize = panel.GetLayoutMinimumSize();
-							break;
-						case SplitHandle handle:
-							split.FirstMinimumSize = handle.GetLayoutMinimumSize();
-							break;
-					}
-					switch (secondResult)
+						DockablePanel panel => panel.GetLayoutMinimumSize(),
+						SplitHandle handle => handle.GetLayoutMinimumSize(),
+						_ => split.FirstMinimumSize
+					};
+					split.SecondMinimumSize = secondResult switch
 					{
-						case DockablePanel panel:
-							split.SecondMinimumSize = panel.GetLayoutMinimumSize();
-							break;
-						case SplitHandle handle:
-							split.SecondMinimumSize = handle.GetLayoutMinimumSize();
-							break;
-					}
+						DockablePanel panel => panel.GetLayoutMinimumSize(),
+						SplitHandle handle => handle.GetLayoutMinimumSize(),
+						_ => split.SecondMinimumSize
+					};
 					result.Add(split);
 					return split;
 				}

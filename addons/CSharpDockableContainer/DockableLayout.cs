@@ -42,12 +42,11 @@ public partial class DockableLayout : Resource
 
 	public void SetRoot(DockableLayoutNode value,bool shouldEmitChanged=true)
 	{
-		switch (value)
+		value = value switch
 		{
-			case null:
-				value = new DockableLayoutPanel();
-				break;
-		}
+			null => new DockableLayoutPanel(),
+			_ => value
+		};
 		if (_Root == value)
 		{
 			return;
@@ -145,15 +144,11 @@ public partial class DockableLayout : Resource
 		var rootBranch = leaf.Parent;
 		var newLeaf = new DockableLayoutPanel();
 		var newBranch = new DockableLayoutSplit();
-		switch (margin == (int)MARGIN.MARGIN_LEFT | margin == (int)MARGIN.MARGIN_RIGHT)
+		newBranch.Direction = (margin == (int)MARGIN.MARGIN_LEFT | margin == (int)MARGIN.MARGIN_RIGHT) switch
 		{
-			case true:
-				newBranch.Direction = (int)DockableLayoutSplit.DIRECTION.HORIZONTAL;
-				break;
-			default:
-				newBranch.Direction = (int)DockableLayoutSplit.DIRECTION.VERTICAL;
-				break;
-		}
+			true => (int)DockableLayoutSplit.DIRECTION.HORIZONTAL,
+			_ => (int)DockableLayoutSplit.DIRECTION.VERTICAL
+		};
 		switch (margin == (int)MARGIN.MARGIN_LEFT | margin == (int)MARGIN.MARGIN_TOP)
 		{
 			case true:
@@ -289,12 +284,12 @@ public partial class DockableLayout : Resource
 				{
 					emptyLeaves.Add(panel);
 				}
-				switch (_FirstLeaf)
+
+				_FirstLeaf = _FirstLeaf switch
 				{
-					case null:
-						_FirstLeaf = panel;
-						break;
-				}
+					null => panel,
+					_ => _FirstLeaf
+				};
 
 				break;
 			}
