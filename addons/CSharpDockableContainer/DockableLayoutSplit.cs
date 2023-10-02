@@ -46,13 +46,14 @@ public partial class DockableLayoutSplit : DockableLayoutNode
 	private DockableLayoutNode _Second = new DockableLayoutPanel();
 	public void SetFirst(DockableLayoutNode @value)
 	{
-		if (@value == null)
+		switch (@value)
 		{
-			_First = new DockableLayoutPanel();
-		}
-		else
-		{
-			_First = @value;
+			case null:
+				_First = new DockableLayoutPanel();
+				break;
+			default:
+				_First = @value;
+				break;
 		}
 		_First.Parent = this;
 		EmitTreeChanged();
@@ -65,13 +66,14 @@ public partial class DockableLayoutSplit : DockableLayoutNode
 
 	public void SetSecond(DockableLayoutNode @value)
 	{
-		if (@value == null)
+		switch (@value)
 		{
-			_Second = new DockableLayoutPanel();
-		}
-		else
-		{
-			_Second = @value;
+			case null:
+				_Second = new DockableLayoutPanel();
+				break;
+			default:
+				_Second = @value;
+				break;
 		}
 		_Second.Parent = this;
 		EmitTreeChanged();

@@ -22,12 +22,15 @@ public partial class DockableLayoutPanel : DockableLayoutNode
 	[Export]
 	public int CurrentTab
 	{
-		get{
-			if (Names.Count == 0)
+		get
+		{
+			switch (Names.Count)
 			{
-				return -1;
+				case 0:
+					return -1;
+				default:
+					return (int)Math.Clamp(_CurrentTab,0,_Names.Count-1);
 			}
-			return (int)Math.Clamp(_CurrentTab,0,_Names.Count-1);
 		}
 		set
 		{
@@ -106,28 +109,30 @@ public partial class DockableLayoutPanel : DockableLayoutNode
 	public void RemoveNode(Node node)
 	{
 		var i = FindChild(node);
-		if (i >= 0)
+		switch (i)
 		{
-			_Names.RemoveAt(i);
-			EmitTreeChanged();
-		}
-		else
-		{
-			GD.PushWarning($"Remove failed, node {node} was not found");
+			case >= 0:
+				_Names.RemoveAt(i);
+				EmitTreeChanged();
+				break;
+			default:
+				GD.PushWarning($"Remove failed, node {node} was not found");
+				break;
 		}
 	}
 
 	public void RenameNode(string previousName,string newName)
 	{
 		var i = FindName(previousName);
-		if(i >= 0)
+		switch (i)
 		{
-			_Names.Insert(i,newName);
-			EmitTreeChanged();
-		}
-		else
-		{
-			GD.PushWarning($"Rename failed, name {previousName} was not found");
+			case >= 0:
+				_Names.Insert(i,newName);
+				EmitTreeChanged();
+				break;
+			default:
+				GD.PushWarning($"Rename failed, name {previousName} was not found");
+				break;
 		}
 	}
 
@@ -143,20 +148,23 @@ public partial class DockableLayoutPanel : DockableLayoutNode
 		while(i < _Names.Count)
 		{
 			var current = _Names[i];
-			if (!nodeNames.Contains(current) | data.ContainsKey(current))
+			switch (!nodeNames.Contains(current) | data.ContainsKey(current))
 			{
-				_Names.RemoveAt(i);
-				removedAny = true;
-			}
-			else
-			{
-				data[current] = this;
-				i += 1;
+				case true:
+					_Names.RemoveAt(i);
+					removedAny = true;
+					break;
+				default:
+					data[current] = this;
+					i += 1;
+					break;
 			}
 		}
-		if (removedAny)
+		switch (removedAny)
 		{
-			EmitTreeChanged();
+			case true:
+				EmitTreeChanged();
+				break;
 		}
 	}
 }

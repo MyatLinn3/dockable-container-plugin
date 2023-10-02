@@ -33,22 +33,40 @@ public partial class SplitHandle : Control
 
 	public override void _GuiInput(InputEvent @event)
 	{
-		if (@event is InputEventMouseButton && (@event as InputEventMouseButton).ButtonIndex == MouseButton.Left)
+		switch (@event)
 		{
-			Dragging = @event.IsPressed();
-			if((@event as InputEventMouseButton).DoubleClick){
-				LayoutSplit.Percent = 0.5f;
-			}
+			case InputEventMouseButton button when button.ButtonIndex == MouseButton.Left:
+			{
+				Dragging = button.IsPressed();
+				switch (button.DoubleClick)
+				{
+					case true:
+						LayoutSplit.Percent = 0.5f;
+						break;
+				}
 
-		}else if(Dragging && @event is InputEventMouseMotion)
-		{
-			var mouseInParent = GetParentControl().GetLocalMousePosition();
-			if(LayoutSplit.IsHorizontal())
+				break;
+			}
+			default:
 			{
-				LayoutSplit.Percent = ( (mouseInParent.X - ParentRect.Position.X) / ParentRect.Size.X );
-			}else
-			{
-				LayoutSplit.Percent = ( (mouseInParent.Y - ParentRect.Position.Y) / ParentRect.Size.Y );
+				switch (Dragging)
+				{
+					case true when @event is InputEventMouseMotion:
+					{
+						var mouseInParent = GetParentControl().GetLocalMousePosition();
+						if(LayoutSplit.IsHorizontal())
+						{
+							LayoutSplit.Percent = ( (mouseInParent.X - ParentRect.Position.X) / ParentRect.Size.X );
+						}else
+						{
+							LayoutSplit.Percent = ( (mouseInParent.Y - ParentRect.Position.Y) / ParentRect.Size.Y );
+						}
+
+						break;
+					}
+				}
+
+				break;
 			}
 		}
 	}
@@ -80,9 +98,10 @@ public partial class SplitHandle : Control
 	}
 	
 	public Vector2 GetLayoutMinimumSize(){
-		if (LayoutSplit == null)
+		switch (LayoutSplit)
 		{
-			return Vector2.Zero;
+			case null:
+				return Vector2.Zero;
 		}
 		var seperation = GetThemeConstant("separation",SPLIT_THEME_CLASS[LayoutSplit.Direction]);
 		if (LayoutSplit.IsHorizontal())
@@ -101,13 +120,14 @@ public partial class SplitHandle : Control
 
 	public void SetSplitCursor(bool value)
 	{
-		if(value)
+		switch (value)
 		{
-			MouseDefaultCursorShape = SPLIT_MOUSE_CURSOR_SHAPE[LayoutSplit.Direction];
-		}
-		else
-		{
-			MouseDefaultCursorShape = CursorShape.Arrow;
+			case true:
+				MouseDefaultCursorShape = SPLIT_MOUSE_CURSOR_SHAPE[LayoutSplit.Direction];
+				break;
+			default:
+				MouseDefaultCursorShape = CursorShape.Arrow;
+				break;
 		}
 	}
 
@@ -125,34 +145,40 @@ public partial class SplitHandle : Control
 				rect.Size.X - SecondMinimumSize.X - separation
 			);
 			var second_width = rect.Size.X - split_offset - separation;
-			if (s == "second")
+			switch (s)
 			{
-				var ds = LastPreviousRects["first"].Size.X;
-				var second_width_m = rect.Size.X - separation - ds;
-				LastPreviousRects = new Godot.Collections.Dictionary<string, Rect2>(){
-				{"first",new Rect2(LastPreviousRects["first"].Position, LastPreviousRects["first"].Size)},
-				{"self",new Rect2(LastPreviousRects["self"].Position, LastPreviousRects["self"].Size)},
-				{"second",
-				new Rect2(LastPreviousRects["second"].Position, new Vector2(second_width_m,rect.Size.Y))}
-			};
-			}else if(s == "first")
-			{
-				var ds = LastPreviousRects["second"].Size.X;
-				var second_width_m = rect.Size.X - separation - ds;
-				LastPreviousRects = new Godot.Collections.Dictionary<string, Rect2>(){
-				{"first",new Rect2(new Vector2(rect.Position.X,rect.Position.Y),  new Vector2(second_width_m,rect.Size.Y))},
-				{"self",new Rect2(LastPreviousRects["self"].Position, LastPreviousRects["self"].Size)},
-				{"second",
-				new Rect2(LastPreviousRects["second"].Position,LastPreviousRects["second"].Size)}
-			};
-			}
-			else{
-				LastPreviousRects = new Godot.Collections.Dictionary<string, Rect2>(){
-				{"first",new Rect2(origin.X, origin.Y, split_offset, rect.Size.Y)},
-				{"self",new Rect2(origin.X + split_offset, origin.Y, separation, rect.Size.Y)},
-				{"second",
-				new Rect2(origin.X + split_offset + separation, origin.Y, second_width, rect.Size.Y)}
-			};
+				case "second":
+				{
+					var ds = LastPreviousRects["first"].Size.X;
+					var second_width_m = rect.Size.X - separation - ds;
+					LastPreviousRects = new Godot.Collections.Dictionary<string, Rect2>(){
+						{"first",new Rect2(LastPreviousRects["first"].Position, LastPreviousRects["first"].Size)},
+						{"self",new Rect2(LastPreviousRects["self"].Position, LastPreviousRects["self"].Size)},
+						{"second",
+							new Rect2(LastPreviousRects["second"].Position, new Vector2(second_width_m,rect.Size.Y))}
+					};
+					break;
+				}
+				case "first":
+				{
+					var ds = LastPreviousRects["second"].Size.X;
+					var second_width_m = rect.Size.X - separation - ds;
+					LastPreviousRects = new Godot.Collections.Dictionary<string, Rect2>(){
+						{"first",new Rect2(new Vector2(rect.Position.X,rect.Position.Y),  new Vector2(second_width_m,rect.Size.Y))},
+						{"self",new Rect2(LastPreviousRects["self"].Position, LastPreviousRects["self"].Size)},
+						{"second",
+							new Rect2(LastPreviousRects["second"].Position,LastPreviousRects["second"].Size)}
+					};
+					break;
+				}
+				default:
+					LastPreviousRects = new Godot.Collections.Dictionary<string, Rect2>(){
+						{"first",new Rect2(origin.X, origin.Y, split_offset, rect.Size.Y)},
+						{"self",new Rect2(origin.X + split_offset, origin.Y, separation, rect.Size.Y)},
+						{"second",
+							new Rect2(origin.X + split_offset + separation, origin.Y, second_width, rect.Size.Y)}
+					};
+					break;
 			}
 			return LastPreviousRects;
 		}
@@ -164,34 +190,40 @@ public partial class SplitHandle : Control
 				rect.Size.Y - SecondMinimumSize.Y - separation
 			);
 			var second_height = rect.Size.Y - split_offset - separation;
-			if (s == "second")
+			switch (s)
 			{
-				var ds = LastPreviousRects["first"].Size.Y;
-				var second_height_m = rect.Size.Y - separation - ds;
-				LastPreviousRects = new Godot.Collections.Dictionary<string, Rect2>(){
-				{"first",new Rect2(LastPreviousRects["first"].Position, LastPreviousRects["first"].Size)},
-				{"self",new Rect2(LastPreviousRects["self"].Position, LastPreviousRects["self"].Size)},
-				{"second",
-				new Rect2(LastPreviousRects["second"].Position, new Vector2(rect.Size.X,second_height_m))}
-			};
-			}else if(s == "first")
-			{
-				var ds = LastPreviousRects["second"].Size.Y;
-				var second_height_m = rect.Size.Y - separation - ds;
-				LastPreviousRects = new Godot.Collections.Dictionary<string, Rect2>(){
-				{"first",new Rect2(new Vector2(rect.Position.X,rect.Position.Y),  new Vector2(rect.Size.X,second_height_m))},
-				{"self",new Rect2(LastPreviousRects["self"].Position, LastPreviousRects["self"].Size)},
-				{"second",
-				new Rect2(LastPreviousRects["second"].Position,LastPreviousRects["second"].Size)}
-			};
-			}
-			else{
-				LastPreviousRects = new Godot.Collections.Dictionary<string, Rect2>(){
-				{"first",new Rect2(origin.X, origin.Y, rect.Size.X,split_offset )},
-				{"self",new Rect2(origin.X,origin.Y + split_offset, rect.Size.X, separation)},
-				{"second",
-				new Rect2(origin.X, origin.Y + split_offset + separation, rect.Size.X,second_height)}
-			};
+				case "second":
+				{
+					var ds = LastPreviousRects["first"].Size.Y;
+					var second_height_m = rect.Size.Y - separation - ds;
+					LastPreviousRects = new Godot.Collections.Dictionary<string, Rect2>(){
+						{"first",new Rect2(LastPreviousRects["first"].Position, LastPreviousRects["first"].Size)},
+						{"self",new Rect2(LastPreviousRects["self"].Position, LastPreviousRects["self"].Size)},
+						{"second",
+							new Rect2(LastPreviousRects["second"].Position, new Vector2(rect.Size.X,second_height_m))}
+					};
+					break;
+				}
+				case "first":
+				{
+					var ds = LastPreviousRects["second"].Size.Y;
+					var second_height_m = rect.Size.Y - separation - ds;
+					LastPreviousRects = new Godot.Collections.Dictionary<string, Rect2>(){
+						{"first",new Rect2(new Vector2(rect.Position.X,rect.Position.Y),  new Vector2(rect.Size.X,second_height_m))},
+						{"self",new Rect2(LastPreviousRects["self"].Position, LastPreviousRects["self"].Size)},
+						{"second",
+							new Rect2(LastPreviousRects["second"].Position,LastPreviousRects["second"].Size)}
+					};
+					break;
+				}
+				default:
+					LastPreviousRects = new Godot.Collections.Dictionary<string, Rect2>(){
+						{"first",new Rect2(origin.X, origin.Y, rect.Size.X,split_offset )},
+						{"self",new Rect2(origin.X,origin.Y + split_offset, rect.Size.X, separation)},
+						{"second",
+							new Rect2(origin.X, origin.Y + split_offset + separation, rect.Size.X,second_height)}
+					};
+					break;
 			}
 			return LastPreviousRects;
 		}

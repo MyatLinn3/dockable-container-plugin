@@ -97,13 +97,22 @@ public partial class DockableContainer : Container
 		_DragNDropPanel.Visible = false;
 		AddChild(_DragNDropPanel);
 
-		if (_Layout == null)
+		switch (_Layout)
 		{
-			SetLayout(null);
-		}
-		else if (CloneLayoutOnReady && !Engine.IsEditorHint())
-		{
-			SetLayout(_Layout.Clone());
+			case null:
+				SetLayout(null);
+				break;
+			default:
+			{
+				switch (CloneLayoutOnReady)
+				{
+					case true when !Engine.IsEditorHint():
+						SetLayout(_Layout.Clone());
+						break;
+				}
+
+				break;
+			}
 		}
 	}
 
@@ -131,25 +140,31 @@ public partial class DockableContainer : Container
 		{
 			GD.PrintErr("FIXME: should only be called when dragging");
 		}
-		if (@event is InputEventMouseMotion)
+
+		switch (@event)
 		{
-			var localPosition = GetLocalMousePosition();
-			DockablePanel panel = null;
-			for (var i = 1;i<_PanelContainer.GetChildCount();i++)
+			case InputEventMouseMotion:
 			{
-				var p =  _PanelContainer.GetChild(i) as DockablePanel;
-				if (p.GetRect().HasPoint(localPosition))
+				var localPosition = GetLocalMousePosition();
+				DockablePanel panel = null;
+				for (var i = 1;i<_PanelContainer.GetChildCount();i++)
 				{
-					panel = p;
-					break;
+					var p =  _PanelContainer.GetChild(i) as DockablePanel;
+					if (p.GetRect().HasPoint(localPosition))
+					{
+						panel = p;
+						break;
+					}
 				}
+				_DragPanel = panel;
+				switch (panel)
+				{
+					case null:
+						return;
+				}
+				FitChildInRect(_DragNDropPanel,panel.GetChildRect());
+				break;
 			}
-			_DragPanel = panel;
-			if (panel == null)
-			{
-				return;
-			}
-			FitChildInRect(_DragNDropPanel,panel.GetChildRect());
 		}
 	}
 
@@ -185,9 +200,11 @@ public partial class DockableContainer : Container
 			return;
 		}
 		var movedTab = fromNode.GetTabControl((int)((Godot.Collections.Dictionary)data)["tabc_element"]);
-		if (movedTab is DockableReferenceControl)
+		switch (movedTab)
 		{
-			movedTab = (movedTab as DockableReferenceControl).ReferenceTo;
+			case DockableReferenceControl control:
+				movedTab = control.ReferenceTo;
+				break;
 		}
 		if (!_IsManagedNode(movedTab))
 		{
@@ -215,14 +232,16 @@ public partial class DockableContainer : Container
 			return;
 		}
 		var leaf = _Layout.GetLeafForNode(control);
-		if (leaf == null)
+		switch (leaf)
 		{
-			return;
+			case null:
+				return;
 		}
 		var positionInLeaf = leaf.FindChild(control);
-		if (positionInLeaf < 0)
+		switch (positionInLeaf)
 		{
-			return;
+			case < 0:
+				return;
 		}
 		DockablePanel panel = null;
 		for (var i = 1;i<_PanelContainer.GetChildCount();i++)
@@ -234,18 +253,23 @@ public partial class DockableContainer : Container
 				break;
 			}
 		}
-		if (panel == null)
+		switch (panel)
 		{
-			return;
+			case null:
+				return;
+			default:
+				panel.CurrentTab = Mathf.Clamp(positionInLeaf,0,panel.GetTabCount()-1);
+				break;
 		}
-		panel.CurrentTab = Mathf.Clamp(positionInLeaf,0,panel.GetTabCount()-1);
 	}
 
 	public void SetLayout(DockableLayout value)
 	{
-		if (value == null)
+		switch (value)
 		{
-			value = new DockableLayout();
+			case null:
+				value = new DockableLayout();
+				break;
 		}
 		if (value == _Layout)
 		{
@@ -331,17 +355,20 @@ public partial class DockableContainer : Container
 
 	public bool _CanHandleDragData(Variant data)
 	{
-
-		if ((string)(((Godot.Collections.Dictionary) data)["type"]) == "tabc_element")
+		switch ((string)(((Godot.Collections.Dictionary) data)["type"]))
 		{
-			GD.Print(data);
-			var tabc = GetNodeOrNull((NodePath)((Godot.Collections.Dictionary)data)["from_path"]);
-			return (
-				tabc != null 
-				&& (tabc as TabContainer).TabsRearrangeGroup == RearrangeGroup
-			);
+			case "tabc_element":
+			{
+				GD.Print(data);
+				var tabc = GetNodeOrNull((NodePath)((Godot.Collections.Dictionary)data)["from_path"]);
+				return (
+					tabc != null 
+					&& (tabc as TabContainer).TabsRearrangeGroup == RearrangeGroup
+				);
+			}
+			default:
+				return false;
 		}
-		return false;
 	}
 
 	public bool _IsManagedNode(Node node)
@@ -424,10 +451,11 @@ public partial class DockableContainer : Container
 
 	public void _Resort()
 	{
-		if (_PanelContainer == null)
+		switch (_PanelContainer)
 		{
-			GD.PrintErr("FIXME: resorting without _panel_container");
-			
+			case null:
+				GD.PrintErr("FIXME: resorting without _panel_container");
+				break;
 		}
 			if (_PanelContainer.GetIndex() != 0)
 			{
@@ -438,9 +466,11 @@ public partial class DockableContainer : Container
 				_DragNDropPanel.MoveToFront();
 			}
 
-			if (_LayoutDirty)
+			switch (_LayoutDirty)
 			{
-				_UpdateLayoutWithChildren();
+				case true:
+					_UpdateLayoutWithChildren();
+					break;
 			}
 
 			var rect = new Rect2(Vector2.Zero,Size);
@@ -460,86 +490,94 @@ public partial class DockableContainer : Container
 
 	public Variant _CalculatePanelAndSplitList(Godot.Collections.Array result,DockableLayoutNode layoutNode)
 	{
-		if (layoutNode is DockableLayoutPanel)
+		switch (layoutNode)
 		{
-			var nodes = new Godot.Collections.Array<Control>();
-			foreach (var n in (layoutNode as DockableLayoutPanel).Names)
+			case DockableLayoutPanel layoutPanel:
 			{
-				var node = (Control)_ChildrenNames[n];
-				if (node != null)
+				var nodes = new Godot.Collections.Array<Control>();
+				foreach (var n in layoutPanel.Names)
 				{
-					if (!(node is Control))
+					var node = (Control)_ChildrenNames[n];
+					if (node != null)
 					{
-						GD.PrintErr($"FIXME: node is not a control {node}");
+						switch ((node is Control))
+						{
+							case false:
+								GD.PrintErr($"FIXME: node is not a control {node}");
+								break;
+						}
+						if (node.GetParent() != this)
+						{
+							GD.PrintErr($"FIXME: node is not child of container {node}");
+						}
+						if (IsControlHidden(node))
+						{
+							node.Visible = false;
+						}
+						else
+						{
+							nodes.Add(node);
+						}
 					}
-					if (node.GetParent() != this)
+				}
+				switch (nodes.Count)
+				{
+					case 0:
+						return 0;
+					default:
 					{
-						GD.PrintErr($"FIXME: node is not child of container {node}");
-					}
-					if (IsControlHidden(node))
-					{
-						node.Visible = false;
-					}
-					else
-					{
-						nodes.Add(node);
+						var panel = _GetPanel(_CurrentPanelIndex);
+						_CurrentPanelIndex += 1;
+						panel.TrackNodes(nodes,layoutPanel);
+						result.Add(panel);
+						return panel;
 					}
 				}
 			}
-			if (nodes.Count == 0)
+			case DockableLayoutSplit node:
 			{
-				return 0;
+				var secondResult = (Control) _CalculatePanelAndSplitList(result,node.Second);
+				var firstResult = (Control) _CalculatePanelAndSplitList(result,node.First);
+				if (firstResult != null && secondResult != null)
+				{
+					var split = _GetSplit(_CurrentSplitIndex);
+					_CurrentSplitIndex += 1;
+					split.LayoutSplit = node;
+					switch (firstResult)
+					{
+						case DockablePanel panel:
+							split.FirstMinimumSize = panel.GetLayoutMinimumSize();
+							break;
+						case SplitHandle handle:
+							split.FirstMinimumSize = handle.GetLayoutMinimumSize();
+							break;
+					}
+					switch (secondResult)
+					{
+						case DockablePanel panel:
+							split.SecondMinimumSize = panel.GetLayoutMinimumSize();
+							break;
+						case SplitHandle handle:
+							split.SecondMinimumSize = handle.GetLayoutMinimumSize();
+							break;
+					}
+					result.Add(split);
+					return split;
+				}
+				else if (firstResult != null)
+				{
+					return firstResult;
+				}
+				else
+				{
+					return secondResult;
+				}
 			}
-			else
-			{
-				var panel = _GetPanel(_CurrentPanelIndex);
-				_CurrentPanelIndex += 1;
-				panel.TrackNodes(nodes,(DockableLayoutPanel)layoutNode);
-				result.Add(panel);
-				return panel;
-			}
+			default:
+				GD.PushWarning($"FIXME: invalid Resource, should be branch or leaf, found {layoutNode}");
+				break;
 		}
-		else if(layoutNode is DockableLayoutSplit)
-		{
-			var secondResult = (Control) _CalculatePanelAndSplitList(result,((DockableLayoutSplit)layoutNode).Second);
-			var firstResult = (Control) _CalculatePanelAndSplitList(result,((DockableLayoutSplit)layoutNode).First);
-			if (firstResult != null && secondResult != null)
-			{
-				var split = _GetSplit(_CurrentSplitIndex);
-				_CurrentSplitIndex += 1;
-				split.LayoutSplit = (DockableLayoutSplit) layoutNode;
-				if (firstResult is DockablePanel)
-				{
-					split.FirstMinimumSize = ((DockablePanel)firstResult).GetLayoutMinimumSize();
-				}
-				else if(firstResult is SplitHandle)
-				{
-					split.FirstMinimumSize = ((SplitHandle)firstResult).GetLayoutMinimumSize();
-				}
-				if (secondResult is DockablePanel)
-				{
-					split.SecondMinimumSize = ((DockablePanel)secondResult).GetLayoutMinimumSize();
-				}
-				else if(secondResult is SplitHandle)
-				{
-					split.SecondMinimumSize = ((SplitHandle)secondResult).GetLayoutMinimumSize();
-				}
-				result.Add(split);
-				return split;
-			}
-			else if (firstResult != null)
-			{
-				return firstResult;
-			}
-			else
-			{
-				return secondResult;
-			}
-		}
-		else
-		{
-			GD.PushWarning($"FIXME: invalid Resource, should be branch or leaf, found {layoutNode}");
-		}
+
 		return 0;
 	}
 
@@ -549,62 +587,68 @@ public partial class DockableContainer : Container
 		{
 			var control = (Control)panelAndSplitList[^1];
 		panelAndSplitList.RemoveAt(panelAndSplitList.Count - 1);
-		if (control is DockablePanel)
+		switch (control)
 		{
-			_PanelContainer.FitChildInRect(control,rect);
-		}
-		else if (control is SplitHandle)
-		{
-			var splitRects = new Godot.Collections.Dictionary<string,Rect2>();
-			if (ps.Count >= 1 && (ps[ps.Count-1] as SplitHandle).LayoutSplit.First == (control as SplitHandle).LayoutSplit && ps[ps.Count-1].Dragging && ps[ps.Count-1].LayoutSplit.IsHorizontal() == (control as SplitHandle).LayoutSplit.IsHorizontal())
+			case DockablePanel:
+				_PanelContainer.FitChildInRect(control,rect);
+				break;
+			case SplitHandle handle:
 			{
-				var no = (control as SplitHandle).LayoutSplit;
-				while (no != null)
+				var splitRects = new Godot.Collections.Dictionary<string,Rect2>();
+				switch (ps.Count)
 				{
-					if (no.Second != null && no.Second is DockableLayoutSplit)
+					case >= 1 when (ps[ps.Count-1] as SplitHandle).LayoutSplit.First == handle.LayoutSplit && ps[ps.Count-1].Dragging && ps[ps.Count-1].LayoutSplit.IsHorizontal() == handle.LayoutSplit.IsHorizontal():
 					{
-						no = (DockableLayoutSplit)no.Second;
-						count.Add("second");
+						var no = handle.LayoutSplit;
+						while (no != null)
+						{
+							if (no.Second != null && no.Second is DockableLayoutSplit)
+							{
+								no = (DockableLayoutSplit)no.Second;
+								count.Add("second");
+							}
+							else
+							{
+								no = null;
+							}
+						}
+						splitRects = handle.GetSplitRects(rect,"second");
+						break;
 					}
-					else
+					case >= 1 when (ps[ps.Count-1] as SplitHandle).LayoutSplit.Second == handle.LayoutSplit && ps[ps.Count-1].Dragging && ps[ps.Count-1].LayoutSplit.IsHorizontal() == handle.LayoutSplit.IsHorizontal():
 					{
-						no = null;
+						var no = handle.LayoutSplit;
+						while (no != null)
+						{
+							if (no.Second != null && no.Second is DockableLayoutSplit)
+							{
+								no = (DockableLayoutSplit)no.First;
+								count.Add("first");
+							}
+							else
+							{
+								no = null;
+							}
+						}
+						splitRects = handle.GetSplitRects(rect,"first");
+						break;
 					}
+					case >= 1 when count.Count >= 1 && ps[0].Dragging && ps[ps.Count-1].LayoutSplit.IsHorizontal() == handle.LayoutSplit.IsHorizontal():
+						splitRects = handle.GetSplitRects(rect,"first");
+						break;
+					default:
+						splitRects = handle.GetSplitRects(rect);
+						break;
 				}
-				splitRects = (control as SplitHandle).GetSplitRects(rect,"second");
-			}
-			else if(ps.Count >= 1 && (ps[ps.Count-1] as SplitHandle).LayoutSplit.Second == (control as SplitHandle).LayoutSplit && ps[ps.Count-1].Dragging && ps[ps.Count-1].LayoutSplit.IsHorizontal() == (control as SplitHandle).LayoutSplit.IsHorizontal())
-			{
-				var no = (control as SplitHandle).LayoutSplit;
-				while (no != null)
+				if (handle.LayoutSplit.First is DockableLayoutSplit || handle.LayoutSplit.Second is DockableLayoutSplit)
 				{
-					if (no.Second != null && no.Second is DockableLayoutSplit)
-					{
-						no = (DockableLayoutSplit)no.First;
-						count.Add("first");
-					}
-					else
-					{
-						no = null;
-					}
+					ps.Add(handle);
 				}
-				splitRects = (control as SplitHandle).GetSplitRects(rect,"first");
+				_SplitContainer.FitChildInRect(handle,splitRects["self"]);
+				_FitPanelAndSplitListToRect(panelAndSplitList,splitRects["first"],ps,count);
+				_FitPanelAndSplitListToRect(panelAndSplitList,splitRects["second"],ps,count);
+				break;
 			}
-			else if (ps.Count >= 1 && count.Count >= 1 && ps[0].Dragging && ps[ps.Count-1].LayoutSplit.IsHorizontal() == (control as SplitHandle).LayoutSplit.IsHorizontal())
-			{
-				splitRects = (control as SplitHandle).GetSplitRects(rect,"first");
-			}
-			else
-			{
-				splitRects = (control as SplitHandle).GetSplitRects(rect);
-			}
-			if ((control as SplitHandle).LayoutSplit.First is DockableLayoutSplit || (control as SplitHandle).LayoutSplit.Second is DockableLayoutSplit)
-			{
-				ps.Add((SplitHandle)control);
-			}
-			_SplitContainer.FitChildInRect(control,splitRects["self"]);
-			_FitPanelAndSplitListToRect(panelAndSplitList,splitRects["first"],ps,count);
-			_FitPanelAndSplitListToRect(panelAndSplitList,splitRects["second"],ps,count);
 		}
 		}
 
@@ -612,9 +656,11 @@ public partial class DockableContainer : Container
 
 	public DockablePanel _GetPanel(int idx)
 	{
-		if (_PanelContainer == null)
+		switch (_PanelContainer)
 		{
-			GD.PrintErr("FIXME: creating panel without _panel_container");
+			case null:
+				GD.PrintErr("FIXME: creating panel without _panel_container");
+				break;
 		}
 		if (idx < _PanelContainer.GetChildCount())
 		{
@@ -632,9 +678,11 @@ public partial class DockableContainer : Container
 
 	public SplitHandle _GetSplit(int idx)
 	{
-		if (_SplitContainer == null)
+		switch (_SplitContainer)
 		{
-			GD.PrintErr("FIXME: creating split without _split_container");
+			case null:
+				GD.PrintErr("FIXME: creating split without _split_container");
+				break;
 		}
 		if (idx < _SplitContainer.GetChildCount())
 		{
@@ -659,9 +707,11 @@ public partial class DockableContainer : Container
 	{
 		_LayoutDirty = true;
 		var control = panel.GetTabControl(tab);
-		if (control is DockableReferenceControl)
+		switch (control)
 		{
-			control = (control as DockableReferenceControl).ReferenceTo;
+			case DockableReferenceControl referenceControl:
+				control = referenceControl.ReferenceTo;
+				break;
 		}
 		if (!_IsManagedNode(control))
 		{

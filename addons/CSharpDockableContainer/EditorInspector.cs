@@ -17,13 +17,18 @@ public partial class EditorInspector : EditorInspectorPlugin
 
 	public override bool _ParseProperty(GodotObject @object, Variant.Type type,
 		string name, PropertyHint hintType, string hintString,
-		PropertyUsageFlags usageFlags, bool wide) 
+		PropertyUsageFlags usageFlags, bool wide)
 	{
-		if(name == "Layout")
+		switch (name)
 		{
-		var editorProperty = new LayoutEditorProperty();
-		AddPropertyEditor("layout",editorProperty);
+			case "Layout":
+			{
+				var editorProperty = new LayoutEditorProperty();
+				AddPropertyEditor("layout",editorProperty);
+				break;
+			}
 		}
+
 		return false;
 	}
 }

@@ -32,10 +32,12 @@ public partial class DragNDropPanel : Control
 
 	public override void _GuiInput(InputEvent @event)
 	{
-		if (_ShouldSplit && @event is InputEventMouseMotion)
+		switch (_ShouldSplit)
 		{
-			_DrawMargin = _FindHoverMargin(((InputEventMouseMotion)@event).Position);
-			QueueRedraw();
+			case true when @event is InputEventMouseMotion:
+				_DrawMargin = _FindHoverMargin(((InputEventMouseMotion)@event).Position);
+				QueueRedraw();
+				break;
 		}
 	}
 
@@ -70,10 +72,12 @@ public partial class DragNDropPanel : Control
 	{
 		Visible = enabled;
 		_ShouldSplit = shouldSplit;
-		if (enabled)
+		switch (enabled)
 		{
-			_DrawMargin = DRAW_NOTHING;
-			QueueRedraw();
+			case true:
+				_DrawMargin = DRAW_NOTHING;
+				QueueRedraw();
+				break;
 		}
 	}
 

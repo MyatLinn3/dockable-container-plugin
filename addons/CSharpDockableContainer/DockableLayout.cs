@@ -43,9 +43,11 @@ public partial class DockableLayout : Resource
 
 	public void SetRoot(DockableLayoutNode value,bool shouldEmitChanged=true)
 	{
-		if (value == null)
+		switch (value)
 		{
-			value = new DockableLayoutPanel();
+			case null:
+				value = new DockableLayoutPanel();
+				break;
 		}
 		if (_Root == value)
 		{
@@ -59,10 +61,12 @@ public partial class DockableLayout : Resource
 		_Root = value;
 		_Root.Parent = null;
 		_Root.Changed += _OnRootChanged;
-//		_Root.Connect("changed",this,"_OnRootChanged");
-		if (shouldEmitChanged)
+		switch (shouldEmitChanged)
 		{
-			_OnRootChanged();
+			//		_Root.Connect("changed",this,"_OnRootChanged");
+			case true:
+				_OnRootChanged();
+				break;
 		}
 	}
 
@@ -91,17 +95,21 @@ public partial class DockableLayout : Resource
 		{
 			_RemoveLeaf(l);
 		}
-		if (_FirstLeaf == null)
+		switch (_FirstLeaf)
 		{
-			_FirstLeaf = new DockableLayoutPanel();
-			SetRoot(_FirstLeaf);
+			case null:
+				_FirstLeaf = new DockableLayoutPanel();
+				SetRoot(_FirstLeaf);
+				break;
 		}
 		foreach (var n in names)
 		{
-			if (!_LeafByNodeName.ContainsKey(n))
+			switch (_LeafByNodeName.ContainsKey(n))
 			{
-				_FirstLeaf.PushName(n);
-				_LeafByNodeName[n] = _FirstLeaf;
+				case false:
+					_FirstLeaf.PushName(n);
+					_LeafByNodeName[n] = _FirstLeaf;
+					break;
 			}
 		}
 		_OnRootChanged();
@@ -110,13 +118,17 @@ public partial class DockableLayout : Resource
 	public void MoveNodeToLeaf(Node node,DockableLayoutPanel leaf,int relativePosition)
 	{
 		string nodeName = node.Name;
-		var previousLeaf = _LeafByNodeName[nodeName] as DockableLayoutPanel;
-		if (previousLeaf != null)
+		switch (_LeafByNodeName[nodeName])
 		{
-			previousLeaf.RemoveNode(node);
-			if (previousLeaf.IsEmpty())
+			case DockableLayoutPanel previousLeaf:
 			{
-				_RemoveLeaf(previousLeaf);
+				previousLeaf.RemoveNode(node);
+				if (previousLeaf.IsEmpty())
+				{
+					_RemoveLeaf(previousLeaf);
+				}
+
+				break;
 			}
 		}
 		leaf.InsertNode(relativePosition,node);
@@ -134,23 +146,25 @@ public partial class DockableLayout : Resource
 		var rootBranch = leaf.Parent;
 		var newLeaf = new DockableLayoutPanel();
 		var newBranch = new DockableLayoutSplit();
-		if (margin == (int)MARGIN.MARGIN_LEFT | margin == (int)MARGIN.MARGIN_RIGHT)
+		switch (margin == (int)MARGIN.MARGIN_LEFT | margin == (int)MARGIN.MARGIN_RIGHT)
 		{
-			newBranch.Direction = (int)DockableLayoutSplit.DIRECTION.HORIZONTAL;
+			case true:
+				newBranch.Direction = (int)DockableLayoutSplit.DIRECTION.HORIZONTAL;
+				break;
+			default:
+				newBranch.Direction = (int)DockableLayoutSplit.DIRECTION.VERTICAL;
+				break;
 		}
-		else
+		switch (margin == (int)MARGIN.MARGIN_LEFT | margin == (int)MARGIN.MARGIN_TOP)
 		{
-			newBranch.Direction = (int)DockableLayoutSplit.DIRECTION.VERTICAL;
-		}
-		if (margin == (int)MARGIN.MARGIN_LEFT | margin == (int)MARGIN.MARGIN_TOP)
-		{
-			newBranch.First = newLeaf;
-			newBranch.Second = leaf;
-		}
-		else
-		{
-			newBranch.First = leaf;
-			newBranch.Second = newLeaf;
+			case true:
+				newBranch.First = newLeaf;
+				newBranch.Second = leaf;
+				break;
+			default:
+				newBranch.First = leaf;
+				newBranch.Second = newLeaf;
+				break;
 		}
 		if (_Root == leaf)
 		{
@@ -186,9 +200,10 @@ public partial class DockableLayout : Resource
 	{
 		string nodeName = node.Name;
 		var leaf = _LeafByNodeName[nodeName] as DockableLayoutPanel;
-		if (leaf == null)
+		switch (leaf)
 		{
-			return;
+			case null:
+				return;
 		}
 		leaf.RemoveNode(node);
 		_LeafByNodeName.Remove(nodeName);
@@ -202,9 +217,10 @@ public partial class DockableLayout : Resource
 	public void RenameNode(string previousName,string newName)
 	{
 		var leaf = _LeafByNodeName[previousName] as DockableLayoutPanel;
-		if (leaf == null)
+		switch (leaf)
 		{
-			return;
+			case null:
+				return;
 		}
 		leaf.RenameNode(previousName,newName);
 		_LeafByNodeName.Remove(previousName);
@@ -214,17 +230,19 @@ public partial class DockableLayout : Resource
 
 	public void SetTabHidden(string name,bool hidden)
 	{
-		if (!_LeafByNodeName.ContainsKey(name))
+		switch (_LeafByNodeName.ContainsKey(name))
 		{
-			return;
+			case false:
+				return;
 		}
-		if (hidden)
+		switch (hidden)
 		{
-			_HiddenTabs[name] = true;
-		}
-		else
-		{
-			_HiddenTabs.Remove(name);
+			case true:
+				_HiddenTabs[name] = true;
+				break;
+			default:
+				_HiddenTabs.Remove(name);
+				break;
 		}
 		_OnRootChanged();
 	}
@@ -247,9 +265,10 @@ public partial class DockableLayout : Resource
 
 	private void _OnRootChanged()
 	{
-		if (_ChangedSignalQueued)
+		switch (_ChangedSignalQueued)
 		{
-			return;
+			case true:
+				return;
 		}
 		_ChangedSignalQueued = true;
 		SetDeferred("_ChangedSignalQueued",false);
@@ -262,26 +281,31 @@ public partial class DockableLayout : Resource
 		Godot.Collections.Array<string> names,
 		Godot.Collections.Array<DockableLayoutPanel> emptyLeaves)
 	{
-		if (node is DockableLayoutPanel)
+		switch (node)
 		{
-			(node as DockableLayoutPanel).UpdateNodes(names,_LeafByNodeName);
-			if (node.IsEmpty())
+			case DockableLayoutPanel panel:
 			{
-				emptyLeaves.Add((DockableLayoutPanel)node);
+				panel.UpdateNodes(names,_LeafByNodeName);
+				if (panel.IsEmpty())
+				{
+					emptyLeaves.Add(panel);
+				}
+				switch (_FirstLeaf)
+				{
+					case null:
+						_FirstLeaf = panel;
+						break;
+				}
+
+				break;
 			}
-			if (_FirstLeaf == null)
-			{
-				_FirstLeaf = node as DockableLayoutPanel;
-			}
-		}
-		else if (node is DockableLayoutSplit)
-		{
-			_EnsureNamesInNode(((DockableLayoutSplit)node).First,names,emptyLeaves);
-			_EnsureNamesInNode(((DockableLayoutSplit)node).Second,names,emptyLeaves);
-		}
-		else
-		{
-			GD.PrintErr($"Invalid Resource, should be branch or leaf, found {node}");
+			case DockableLayoutSplit split:
+				_EnsureNamesInNode(split.First,names,emptyLeaves);
+				_EnsureNamesInNode(split.Second,names,emptyLeaves);
+				break;
+			default:
+				GD.PrintErr($"Invalid Resource, should be branch or leaf, found {node}");
+				break;
 		}
 	}
 
@@ -296,9 +320,11 @@ public partial class DockableLayout : Resource
 			return;
 		}
 		DockableLayoutNode collapsedBranch = leaf.Parent;
-		if (!(collapsedBranch is DockableLayoutSplit))
+		switch ((collapsedBranch is DockableLayoutSplit))
 		{
-			GD.PrintErr("FIXME: leaf is not a child of branch");
+			case false:
+				GD.PrintErr("FIXME: leaf is not a child of branch");
+				break;
 		}
 		DockableLayoutNode keptBranch;
 		if (leaf == (collapsedBranch as DockableLayoutSplit).Second)

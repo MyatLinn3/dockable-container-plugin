@@ -127,14 +127,16 @@ public partial class DockablePanel : TabContainer
 	}
 	public void _OnTabChanged(long tab)
 	{
-		if (_Leaf == null)
+		switch (_Leaf)
 		{
-			return;
+			case null:
+				return;
 		}
 		var control = GetTabControl((int)tab);
-		if (control == null)
+		switch (control)
 		{
-			return;
+			case null:
+				return;
 		}
 		string tabName = control.Name;
 		var nameIndexInLeaf = _Leaf.FindName(tabName);
