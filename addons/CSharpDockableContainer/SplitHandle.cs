@@ -21,9 +21,9 @@ public partial class SplitHandle : Control
 	private Godot.Collections.Dictionary<string,Rect2> LastPreviousRects;
 	public override void _Draw()
 	{
-		string themeClass = SPLIT_THEME_CLASS[LayoutSplit.Direction];
-		Texture2D icon = GetThemeIcon("grabber",themeClass);
-		bool autohide = Convert.ToBoolean(GetThemeConstant("autohide",themeClass));
+		var themeClass = SPLIT_THEME_CLASS[LayoutSplit.Direction];
+		var icon = GetThemeIcon("grabber",themeClass);
+		var autohide = Convert.ToBoolean(GetThemeConstant("autohide",themeClass));
 		if((icon == null) || (autohide && !MouseHovering))
 		{
 			return;
@@ -42,7 +42,7 @@ public partial class SplitHandle : Control
 
 		}else if(Dragging && @event is InputEventMouseMotion)
 		{
-			Vector2 mouseInParent = GetParentControl().GetLocalMousePosition();
+			var mouseInParent = GetParentControl().GetLocalMousePosition();
 			if(LayoutSplit.IsHorizontal())
 			{
 				LayoutSplit.Percent = ( (mouseInParent.X - ParentRect.Position.X) / ParentRect.Size.X );
@@ -115,16 +115,16 @@ public partial class SplitHandle : Control
 	{
 		ParentRect = rect;
 		var separation = GetThemeConstant("separation",SPLIT_THEME_CLASS[LayoutSplit.Direction]);
-		Vector2 origin = rect.Position;
-		float percent = LayoutSplit.Percent;
+		var origin = rect.Position;
+		var percent = LayoutSplit.Percent;
 		if (LayoutSplit.IsHorizontal())
 		{
-			float split_offset = Mathf.Clamp(
+			var split_offset = Mathf.Clamp(
 				rect.Size.X * percent - separation * 0.5f,
 				FirstMinimumSize.X,
 				rect.Size.X - SecondMinimumSize.X - separation
 			);
-			float second_width = rect.Size.X - split_offset - separation;
+			var second_width = rect.Size.X - split_offset - separation;
 			if (s == "second")
 			{
 				var ds = LastPreviousRects["first"].Size.X;
@@ -158,12 +158,12 @@ public partial class SplitHandle : Control
 		}
 		else
 		{
-			float split_offset = Mathf.Clamp(
+			var split_offset = Mathf.Clamp(
 				rect.Size.Y * percent - separation * 0.5f,
 				FirstMinimumSize.Y,
 				rect.Size.Y - SecondMinimumSize.Y - separation
 			);
-			float second_height = rect.Size.Y - split_offset - separation;
+			var second_height = rect.Size.Y - split_offset - separation;
 			if (s == "second")
 			{
 				var ds = LastPreviousRects["first"].Size.Y;

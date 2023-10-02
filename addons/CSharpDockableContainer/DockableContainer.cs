@@ -12,9 +12,9 @@ public partial class DockableContainer : Container
 		set
 		{
 			_TabAlign = value;
-			for (int i = 1;i<_PanelContainer.GetChildCount();i++)
+			for (var i = 1;i<_PanelContainer.GetChildCount();i++)
 			{
-				DockablePanel panel =  _PanelContainer.GetChild(i) as DockablePanel;
+				var panel =  _PanelContainer.GetChild(i) as DockablePanel;
 				panel.TabAlignment = value;
 			}
 		}
@@ -27,9 +27,9 @@ public partial class DockableContainer : Container
 		set
 		{
 			_UseHiddenTabsForMinSize = value;
-			for (int i = 1;i<_PanelContainer.GetChildCount();i++)
+			for (var i = 1;i<_PanelContainer.GetChildCount();i++)
 			{
-				DockablePanel panel =  _PanelContainer.GetChild(i) as DockablePanel;
+				var panel =  _PanelContainer.GetChild(i) as DockablePanel;
 				panel.UseHiddenTabsForMinSize = value;
 			}
 		}
@@ -42,9 +42,9 @@ public partial class DockableContainer : Container
 		set
 		{
 			_TabsVisible = value;
-			for (int i = 1;i<_PanelContainer.GetChildCount();i++)
+			for (var i = 1;i<_PanelContainer.GetChildCount();i++)
 			{
-				DockablePanel panel = _PanelContainer.GetChild(i) as DockablePanel;
+				var panel = _PanelContainer.GetChild(i) as DockablePanel;
 				panel.TabsVisible = value;
 			}
 		}
@@ -136,11 +136,11 @@ public partial class DockableContainer : Container
 		}
 		if (@event is InputEventMouseMotion)
 		{
-			Vector2 localPosition = GetLocalMousePosition();
+			var localPosition = GetLocalMousePosition();
 			DockablePanel panel = null;
-			for (int i = 1;i<_PanelContainer.GetChildCount();i++)
+			for (var i = 1;i<_PanelContainer.GetChildCount();i++)
 			{
-				DockablePanel p =  _PanelContainer.GetChild(i) as DockablePanel;
+				var p =  _PanelContainer.GetChild(i) as DockablePanel;
 				if (p.GetRect().HasPoint(localPosition))
 				{
 					panel = p;
@@ -182,12 +182,12 @@ public partial class DockableContainer : Container
 
 	public override void _DropData(Vector2 _position,Variant data)
 	{
-		DockablePanel fromNode = GetNode((NodePath)((Godot.Collections.Dictionary)data)["from_path"]) as DockablePanel;
+		var fromNode = GetNode((NodePath)((Godot.Collections.Dictionary)data)["from_path"]) as DockablePanel;
 		if (fromNode == _DragPanel && _DragPanel.GetChildCount() == 1)
 		{
 			return;
 		}
-		Control movedTab = fromNode.GetTabControl((int)((Godot.Collections.Dictionary)data)["tabc_element"]);
+		var movedTab = fromNode.GetTabControl((int)((Godot.Collections.Dictionary)data)["tabc_element"]);
 		if (movedTab is DockableReferenceControl)
 		{
 			movedTab = (movedTab as DockableReferenceControl).ReferenceTo;
@@ -199,7 +199,7 @@ public partial class DockableContainer : Container
 		}
 		if (_DragPanel != null)
 		{
-			int margin = _DragNDropPanel.GetHoverMargin();
+			var margin = _DragNDropPanel.GetHoverMargin();
 			_Layout.SplitLeafWithNode(_DragPanel.Leaf,movedTab,margin);
 		}
 		_LayoutDirty = true;
@@ -217,20 +217,20 @@ public partial class DockableContainer : Container
 			GD.PushWarning("Trying to focus a hidden control");
 			return;
 		}
-		DockableLayoutPanel leaf = _Layout.GetLeafForNode(control);
+		var leaf = _Layout.GetLeafForNode(control);
 		if (leaf == null)
 		{
 			return;
 		}
-		int positionInLeaf = leaf.FindChild(control);
+		var positionInLeaf = leaf.FindChild(control);
 		if (positionInLeaf < 0)
 		{
 			return;
 		}
 		DockablePanel panel = null;
-		for (int i = 1;i<_PanelContainer.GetChildCount();i++)
+		for (var i = 1;i<_PanelContainer.GetChildCount();i++)
 		{
-			DockablePanel p = _PanelContainer.GetChild(i) as DockablePanel;
+			var p = _PanelContainer.GetChild(i) as DockablePanel;
 			if (p.Leaf == leaf)
 			{
 				panel = p;
@@ -267,9 +267,9 @@ public partial class DockableContainer : Container
 	public void SetTabAlignment(TabBar.AlignmentMode value)
 	{
 		_TabAlign = value;
-		for (int i = 1;i<_PanelContainer.GetChildCount();i++)
+		for (var i = 1;i<_PanelContainer.GetChildCount();i++)
 		{
-			Node panel = _PanelContainer.GetChild(i);
+			var panel = _PanelContainer.GetChild(i);
 			(panel as TabContainer).TabAlignment= value;
 		}
 	}
@@ -282,9 +282,9 @@ public partial class DockableContainer : Container
 	public void SetUseHiddenTabsForMinSize(bool value)
 	{
 		_UseHiddenTabsForMinSize = value;
-		for (int i = 1;i<_PanelContainer.GetChildCount();i++)
+		for (var i = 1;i<_PanelContainer.GetChildCount();i++)
 		{
-			DockableContainer panel = _PanelContainer.GetChild(i) as DockableContainer;
+			var panel = _PanelContainer.GetChild(i) as DockableContainer;
 			panel.UseHiddenTabsForMinSize = value;
 		}
 	}
@@ -306,10 +306,10 @@ public partial class DockableContainer : Container
 
 	public Godot.Collections.Array<Control> GetTabs()
 	{
-		Godot.Collections.Array<Control> tabs = new Godot.Collections.Array<Control>();
-		for (int i = 0;i<GetChildCount();i++)
+		var tabs = new Godot.Collections.Array<Control>();
+		for (var i = 0;i<GetChildCount();i++)
 		{
-			Control child = GetChild(i) as Control;
+			var child = GetChild(i) as Control;
 			if (_IsManagedNode(child))
 			{
 				tabs.Add(child);
@@ -320,10 +320,10 @@ public partial class DockableContainer : Container
 
 	public int GetTabCount()
 	{
-		int count = 0;
-		for (int i = 0;i<GetChildCount();i++)
+		var count = 0;
+		for (var i = 0;i<GetChildCount();i++)
 		{
-			Node child = GetChild(i);
+			var child = GetChild(i);
 			if (_IsManagedNode(child))
 			{
 				count += 1;
@@ -338,7 +338,7 @@ public partial class DockableContainer : Container
 		if ((string)(((Godot.Collections.Dictionary) data)["type"]) == "tabc_element")
 		{
 			GD.Print(data);
-			Node tabc = GetNodeOrNull((NodePath)((Godot.Collections.Dictionary)data)["from_path"]);
+			var tabc = GetNodeOrNull((NodePath)((Godot.Collections.Dictionary)data)["from_path"]);
 			return (
 				tabc != null 
 				&& (tabc as TabContainer).TabsRearrangeGroup == RearrangeGroup
@@ -360,11 +360,11 @@ public partial class DockableContainer : Container
 
 	public void _UpdateLayoutWithChildren()
 	{
-		Godot.Collections.Array<string> names = new Godot.Collections.Array<string>();
+		var names = new Godot.Collections.Array<string>();
 		_ChildrenNames.Clear();
-		for (int i = 1;i<GetChildCount()-1;i++)
+		for (var i = 1;i<GetChildCount()-1;i++)
 		{
-			Node c = GetChild(i);
+			var c = GetChild(i);
 			if (_TrackNode(c))
 			{
 				names.Add(c.Name);
@@ -446,13 +446,13 @@ public partial class DockableContainer : Container
 				_UpdateLayoutWithChildren();
 			}
 
-			Rect2 rect = new Rect2(Vector2.Zero,Size);
+			var rect = new Rect2(Vector2.Zero,Size);
 			FitChildInRect(_PanelContainer,rect);
 			_PanelContainer.FitChildInRect(_SplitContainer,rect);
 
 			_CurrentPanelIndex = 1;
 			_CurrentSplitIndex = 0;
-			Godot.Collections.Array childrenList = new Godot.Collections.Array();
+			var childrenList = new Godot.Collections.Array();
 			_CalculatePanelAndSplitList(childrenList,_Layout.Root);
 			_FitPanelAndSplitListToRect(childrenList,rect,new Godot.Collections.Array<SplitHandle>(),new Godot.Collections.Array());
 
@@ -465,10 +465,10 @@ public partial class DockableContainer : Container
 	{
 		if (layoutNode is DockableLayoutPanel)
 		{
-			Godot.Collections.Array<Control> nodes = new Godot.Collections.Array<Control>();
-			foreach (string n in (layoutNode as DockableLayoutPanel).Names)
+			var nodes = new Godot.Collections.Array<Control>();
+			foreach (var n in (layoutNode as DockableLayoutPanel).Names)
 			{
-				Control node = (Control)_ChildrenNames[n];
+				var node = (Control)_ChildrenNames[n];
 				if (node != null)
 				{
 					if (!(node is Control))
@@ -495,7 +495,7 @@ public partial class DockableContainer : Container
 			}
 			else
 			{
-				DockablePanel panel = _GetPanel(_CurrentPanelIndex);
+				var panel = _GetPanel(_CurrentPanelIndex);
 				_CurrentPanelIndex += 1;
 				panel.TrackNodes(nodes,(DockableLayoutPanel)layoutNode);
 				result.Add(panel);
@@ -504,11 +504,11 @@ public partial class DockableContainer : Container
 		}
 		else if(layoutNode is DockableLayoutSplit)
 		{
-			Control secondResult = (Control) _CalculatePanelAndSplitList(result,((DockableLayoutSplit)layoutNode).Second);
-			Control firstResult = (Control) _CalculatePanelAndSplitList(result,((DockableLayoutSplit)layoutNode).First);
+			var secondResult = (Control) _CalculatePanelAndSplitList(result,((DockableLayoutSplit)layoutNode).Second);
+			var firstResult = (Control) _CalculatePanelAndSplitList(result,((DockableLayoutSplit)layoutNode).First);
 			if (firstResult != null && secondResult != null)
 			{
-				SplitHandle split = _GetSplit(_CurrentSplitIndex);
+				var split = _GetSplit(_CurrentSplitIndex);
 				_CurrentSplitIndex += 1;
 				split.LayoutSplit = (DockableLayoutSplit) layoutNode;
 				if (firstResult is DockablePanel)
@@ -550,7 +550,7 @@ public partial class DockableContainer : Container
 	{
 		if (panelAndSplitList.Count != 0)
 		{
-			Control control = (Control)panelAndSplitList[^1];
+			var control = (Control)panelAndSplitList[^1];
 		panelAndSplitList.RemoveAt(panelAndSplitList.Count - 1);
 		if (control is DockablePanel)
 		{
@@ -623,7 +623,7 @@ public partial class DockableContainer : Container
 		{
 			return _PanelContainer.GetChild(idx) as DockablePanel;
 		}
-		DockablePanel panel = new DockablePanel();
+		var panel = new DockablePanel();
 		panel.TabAlignment = _TabAlign;
 		panel.TabsVisible = _TabsVisible;
 		panel.UseHiddenTabsForMinSize = _UseHiddenTabsForMinSize;
@@ -643,16 +643,16 @@ public partial class DockableContainer : Container
 		{
 			return _SplitContainer.GetChild(idx) as SplitHandle;
 		}
-		SplitHandle split = new SplitHandle();
+		var split = new SplitHandle();
 		_SplitContainer.AddChild(split);
 		return split;
 	}
 
 	public void _UntrackChildrenAfter(Control node,int idx)
 	{
-		for (int i = idx;i < node.GetChildCount();i++)
+		for (var i = idx;i < node.GetChildCount();i++)
 		{
-			Node child = node.GetChild(idx);
+			var child = node.GetChild(idx);
 			node.RemoveChild(child);
 			child.QueueFree();
 		}
@@ -661,7 +661,7 @@ public partial class DockableContainer : Container
 	public void _OnPanelTabLayoutChanged(int tab,DockablePanel panel)
 	{
 		_LayoutDirty = true;
-		Control control = panel.GetTabControl(tab);
+		var control = panel.GetTabControl(tab);
 		if (control is DockableReferenceControl)
 		{
 			control = (control as DockableReferenceControl).ReferenceTo;
@@ -677,7 +677,7 @@ public partial class DockableContainer : Container
 
 	public void _OnChildRenamed(Node child)
 	{
-		string oldName = (string)_ChildrenNames[child];
+		var oldName = (string)_ChildrenNames[child];
 		if (oldName == child.Name)
 		{
 			return;

@@ -41,7 +41,7 @@ public partial class DragNDropPanel : Control
 
 	public override void _Draw()
 	{
-		Rect2 rect = new Rect2();
+		var rect = new Rect2();
 		switch (_DrawMargin)
 		{
 			case -1:
@@ -54,15 +54,15 @@ public partial class DragNDropPanel : Control
 				rect = new Rect2(0,0,Size.X,Size.Y * 0.5f);
 				break;
 			case (int)MARGIN.MARGIN_RIGHT:
-				float halfWidth = Size.X * 0.5f;
+				var halfWidth = Size.X * 0.5f;
 				rect = new Rect2(halfWidth,0,halfWidth,Size.Y);
 				break;
 			case (int)MARGIN.MARGIN_BOTTOM:
-				float halfHeight = Size.Y * 0.5f;
+				var halfHeight = Size.Y * 0.5f;
 				rect = new Rect2(0,halfHeight,Size.X,halfHeight);
 				break;
 		}
-		StyleBox styleBox = GetThemeStylebox("panel","TooltipPanel");
+		var styleBox = GetThemeStylebox("panel","TooltipPanel");
 		DrawStyleBox(styleBox,rect);
 	}
 
@@ -84,27 +84,27 @@ public partial class DragNDropPanel : Control
 
 	public int _FindHoverMargin(Vector2 point)
 	{
-		Vector2 halfSize = new Vector2(Size.X*0.5f,Size.Y*0.5f);
+		var halfSize = new Vector2(Size.X*0.5f,Size.Y*0.5f);
 		
-		float left = point.DistanceSquaredTo(new Vector2(0,halfSize.Y));
-		float lesser = left;
-		int lesserMargin = (int)MARGIN.MARGIN_LEFT;
+		var left = point.DistanceSquaredTo(new Vector2(0,halfSize.Y));
+		var lesser = left;
+		var lesserMargin = (int)MARGIN.MARGIN_LEFT;
 
-		float top = point.DistanceSquaredTo(new Vector2(halfSize.X,0));
+		var top = point.DistanceSquaredTo(new Vector2(halfSize.X,0));
 		if (lesser > top)
 		{
 			lesser = top;
 			lesserMargin = (int)MARGIN.MARGIN_TOP;
 		}
 
-		float right = point.DistanceSquaredTo(new Vector2(Size.X,halfSize.Y));
+		var right = point.DistanceSquaredTo(new Vector2(Size.X,halfSize.Y));
 		if (lesser > right)
 		{
 			lesser = right;
 			lesserMargin = (int)MARGIN.MARGIN_RIGHT;
 		}
 
-		float bottom = point.DistanceSquaredTo(new Vector2(halfSize.X,Size.Y));
+		var bottom = point.DistanceSquaredTo(new Vector2(halfSize.X,Size.Y));
 		if (lesser > bottom)
 		{
 			lesserMargin = (int)MARGIN.MARGIN_BOTTOM;

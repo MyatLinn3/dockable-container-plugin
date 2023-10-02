@@ -30,10 +30,10 @@ public partial class LayoutEditorProperty : EditorProperty
 		container.CloneLayoutOnReady = false;
 		container.CustomMinimumSize = CustomMinimumSize;
 
-		DockableLayout @value = GetLayout().Clone();
-		foreach(String n in @value.GetNames())
+		var @value = GetLayout().Clone();
+		foreach(var n in @value.GetNames())
 		{
-			Label child = CreateChildControl(n);
+			var child = CreateChildControl(n);
 			container.AddChild(child);
 		}
 		container.Set(GetEditedProperty(),@value);
@@ -48,19 +48,19 @@ public partial class LayoutEditorProperty : EditorProperty
 	
 	public override void _UpdateProperty()
 	{
-		DockableLayout value = GetLayout();
+		var value = GetLayout();
 		container.Set("Layout",value);
 	}
 
 	public DockableLayout GetLayout()
 	{
-		DockableContainer originalContainer = (DockableContainer)GetEditedObject();
+		var originalContainer = (DockableContainer)GetEditedObject();
 		return (DockableLayout)originalContainer.Get("Layout");
 	}
 
 	public Label CreateChildControl(string named)
 	{
-		Label newControl = new Label();
+		var newControl = new Label();
 		newControl.Name = named;
 		newControl.HorizontalAlignment = HorizontalAlignment.Center;
 //		 HORIZONTAL_ALIGNMENT_CENTER;
@@ -72,12 +72,12 @@ public partial class LayoutEditorProperty : EditorProperty
 
 	private void OnHiddenMenuPopupAboutToShow()
 	{
-		DockableLayout layout = GetLayout().Clone();
+		var layout = GetLayout().Clone();
 		hiddenMenuPopup.Clear();
 		hiddenMenuList = layout.GetNames();
-		for(int i = 0;i < hiddenMenuList.Count;i++)
+		for(var i = 0;i < hiddenMenuList.Count;i++)
 		{
-			string tabName = hiddenMenuList[i];
+			var tabName = hiddenMenuList[i];
 			hiddenMenuPopup.AddCheckItem(tabName,i);
 			hiddenMenuPopup.SetItemChecked(i,!layout.IsTabHidden(tabName));
 		}
@@ -85,9 +85,9 @@ public partial class LayoutEditorProperty : EditorProperty
 
 	private void OnHiddenMenuPopupIdPressed(long id)
 	{
-		DockableLayout layout = GetLayout().Clone();
-		string tabName = hiddenMenuList[(int)id];
-		bool newHidden = !layout.IsTabHidden(tabName);
+		var layout = GetLayout().Clone();
+		var tabName = hiddenMenuList[(int)id];
+		var newHidden = !layout.IsTabHidden(tabName);
 		GetLayout().SetTabHidden(tabName,newHidden);
 		hiddenMenuPopup.SetItemChecked((int)id,!newHidden);
 	}

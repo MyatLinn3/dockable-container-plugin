@@ -96,7 +96,7 @@ public partial class DockableLayoutSplit : DockableLayoutNode
 	}
 	public void SetPercent(float @value)
 	{
-		float clampedValue = Mathf.Clamp(@value,0,1);
+		var clampedValue = Mathf.Clamp(@value,0,1);
 		if (!Mathf.IsEqualApprox(_Percent,clampedValue))
 		{
 			_Percent = clampedValue;
@@ -110,7 +110,7 @@ public partial class DockableLayoutSplit : DockableLayoutNode
 	}
 	public override Godot.Collections.Array<string> GetNames()
 	{
-		Godot.Collections.Array<string> names = _First.GetNames();
+		var names = _First.GetNames();
 		names.AddRange(_Second.GetNames());
 		return names;
 	}

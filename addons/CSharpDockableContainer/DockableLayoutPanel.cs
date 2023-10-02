@@ -89,7 +89,7 @@ public partial class DockableLayoutPanel : DockableLayoutNode
 
 	public int FindName(string nodeName)
 	{
-		for (int i =0;i < _Names.Count;i++)
+		for (var i =0;i < _Names.Count;i++)
 		{
 			if (_Names[i] == nodeName)
 			{
@@ -105,7 +105,7 @@ public partial class DockableLayoutPanel : DockableLayoutNode
 
 	public void RemoveNode(Node node)
 	{
-		int i = FindChild(node);
+		var i = FindChild(node);
 		if (i >= 0)
 		{
 			_Names.RemoveAt(i);
@@ -119,7 +119,7 @@ public partial class DockableLayoutPanel : DockableLayoutNode
 
 	public void RenameNode(string previousName,string newName)
 	{
-		int i = FindName(previousName);
+		var i = FindName(previousName);
 		if(i >= 0)
 		{
 			_Names.Insert(i,newName);
@@ -138,11 +138,11 @@ public partial class DockableLayoutPanel : DockableLayoutNode
 
 	public void UpdateNodes(Godot.Collections.Array<string> nodeNames,Godot.Collections.Dictionary<string,DockableLayoutNode> data)
 	{
-		int i = 0;
-		bool removedAny = false;
+		var i = 0;
+		var removedAny = false;
 		while(i < _Names.Count)
 		{
-			string current = _Names[i];
+			var current = _Names[i];
 			if (!nodeNames.Contains(current) | data.ContainsKey(current))
 			{
 				_Names.RemoveAt(i);

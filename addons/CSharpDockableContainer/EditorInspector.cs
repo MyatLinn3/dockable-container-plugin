@@ -21,7 +21,7 @@ public partial class EditorInspector : EditorInspectorPlugin
 	{
 		if(name == "Layout")
 		{
-		LayoutEditorProperty editorProperty = new LayoutEditorProperty();
+		var editorProperty = new LayoutEditorProperty();
 		AddPropertyEditor("layout",editorProperty);
 		}
 		return false;

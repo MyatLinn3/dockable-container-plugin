@@ -46,15 +46,15 @@ public partial class DockablePanel : TabContainer
 	public void TrackNodes(Godot.Collections.Array<Control> nodes,DockableLayoutPanel newLeaf)
 	{
 		_Leaf = null;
-		int minSize = Mathf.Min(nodes.Count,GetChildCount());
-		for (int i =minSize;i < GetChildCount();i++)
+		var minSize = Mathf.Min(nodes.Count,GetChildCount());
+		for (var i =minSize;i < GetChildCount();i++)
 		{
-			DockableReferenceControl child = GetChild(minSize) as DockableReferenceControl;
+			var child = GetChild(minSize) as DockableReferenceControl;
 			child.ReferenceTo = null;
 			RemoveChild(child);
 			child.QueueFree();
 		}
-		for (int i =minSize;i < nodes.Count;i++)
+		for (var i =minSize;i < nodes.Count;i++)
 		{
 			Node refControl = new DockableReferenceControl();
 			AddChild(refControl);
@@ -64,9 +64,9 @@ public partial class DockablePanel : TabContainer
 			GD.PrintErr("FixMe!");
 		}
 		GD.Print(nodes.Count);
-		for (int i =0;i < nodes.Count;i++)
+		for (var i =0;i < nodes.Count;i++)
 		{
-			DockableReferenceControl refControl = GetChild(i) as DockableReferenceControl;
+			var refControl = GetChild(i) as DockableReferenceControl;
 			refControl.ReferenceTo = nodes[i];
 			displayNames = newLeaf.changeNameOfTabs;
 			if (displayNames.Count != nodes.Count)
@@ -80,7 +80,7 @@ public partial class DockablePanel : TabContainer
 
 	public Rect2 GetChildRect()
 	{
-		Control control = GetCurrentTabControl();
+		var control = GetCurrentTabControl();
 		return new Rect2(Position + control.Position,control.Size);
 	}
 
@@ -118,7 +118,7 @@ public partial class DockablePanel : TabContainer
 		if (_Leaf != null)
 		{
 			displayNames = names;
-			for(int i=0;i < GetTabCount();i++)
+			for(var i=0;i < GetTabCount();i++)
 			{
 				SetTabTitle(CurrentTab,names[i]);
 			}
@@ -131,13 +131,13 @@ public partial class DockablePanel : TabContainer
 		{
 			return;
 		}
-		Control control = GetTabControl((int)tab);
+		var control = GetTabControl((int)tab);
 		if (control == null)
 		{
 			return;
 		}
 		string tabName = control.Name;
-		int nameIndexInLeaf = _Leaf.FindName(tabName);
+		var nameIndexInLeaf = _Leaf.FindName(tabName);
 		if (nameIndexInLeaf != tab)
 		{
 			EmitSignal(SignalName.TabLayoutChanged,tab);

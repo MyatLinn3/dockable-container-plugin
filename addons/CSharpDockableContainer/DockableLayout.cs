@@ -85,7 +85,7 @@ public partial class DockableLayout : Resource
 	{
 		_LeafByNodeName.Clear();
 		_FirstLeaf = null;
-		Godot.Collections.Array<DockableLayoutPanel> emptyLeaves = new Godot.Collections.Array<DockableLayoutPanel>();
+		var emptyLeaves = new Godot.Collections.Array<DockableLayoutPanel>();
 		_EnsureNamesInNode(_Root,names,emptyLeaves);
 		foreach (var l in emptyLeaves)
 		{
@@ -96,7 +96,7 @@ public partial class DockableLayout : Resource
 			_FirstLeaf = new DockableLayoutPanel();
 			SetRoot(_FirstLeaf);
 		}
-		foreach (string n in names)
+		foreach (var n in names)
 		{
 			if (!_LeafByNodeName.ContainsKey(n))
 			{
@@ -110,7 +110,7 @@ public partial class DockableLayout : Resource
 	public void MoveNodeToLeaf(Node node,DockableLayoutPanel leaf,int relativePosition)
 	{
 		string nodeName = node.Name;
-		DockableLayoutPanel previousLeaf = _LeafByNodeName[nodeName] as DockableLayoutPanel;
+		var previousLeaf = _LeafByNodeName[nodeName] as DockableLayoutPanel;
 		if (previousLeaf != null)
 		{
 			previousLeaf.RemoveNode(node);
@@ -132,8 +132,8 @@ public partial class DockableLayout : Resource
 	public void SplitLeafWithNode(DockableLayoutPanel leaf,Node node,int margin)
 	{
 		var rootBranch = leaf.Parent;
-		DockableLayoutPanel newLeaf = new DockableLayoutPanel();
-		DockableLayoutSplit newBranch = new DockableLayoutSplit();
+		var newLeaf = new DockableLayoutPanel();
+		var newBranch = new DockableLayoutSplit();
 		if (margin == (int)MARGIN.MARGIN_LEFT | margin == (int)MARGIN.MARGIN_RIGHT)
 		{
 			newBranch.Direction = (int)DockableLayoutSplit.DIRECTION.HORIZONTAL;
@@ -185,7 +185,7 @@ public partial class DockableLayout : Resource
 	public void RemoveNode(Node node)
 	{
 		string nodeName = node.Name;
-		DockableLayoutPanel leaf = _LeafByNodeName[nodeName] as DockableLayoutPanel;
+		var leaf = _LeafByNodeName[nodeName] as DockableLayoutPanel;
 		if (leaf == null)
 		{
 			return;
@@ -201,7 +201,7 @@ public partial class DockableLayout : Resource
 
 	public void RenameNode(string previousName,string newName)
 	{
-		DockableLayoutPanel leaf = _LeafByNodeName[previousName] as DockableLayoutPanel;
+		var leaf = _LeafByNodeName[previousName] as DockableLayoutPanel;
 		if (leaf == null)
 		{
 			return;
