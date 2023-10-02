@@ -13,6 +13,13 @@ public partial class DockableLayoutPanel : DockableLayoutNode
 	}
 
 	[Export]
+	public Godot.Collections.Array<string> changeNameOfTabs
+	{
+		get{return GetCurrentTabNames();}
+		set{SetCurrentTabNames(value);}
+	}
+
+	[Export]
 	public int CurrentTab
 	{
 		get{
@@ -31,29 +38,52 @@ public partial class DockableLayoutPanel : DockableLayoutNode
 			}
 		}
 	}
+	
+	[Signal]
+	public delegate void GetCurrentTabTitleEventHandler(Godot.Collections.Array<string> names);
+	[Signal]
+	public delegate void SetCurrentTabTitleEventHandler(Godot.Collections.Array<string> names);
 
 	public Godot.Collections.Array<string> _Names = new Godot.Collections.Array<string>();
 	public int _CurrentTab = 0;
-
+	public Godot.Collections.Array<string> _changeNameOfTabs = new Godot.Collections.Array<string>();
 	public DockableLayoutPanel()
 	{
 		ResourceName = "Tabs";
+		GetCurrentTabTitle += GetCTabTitle;
+		EmitSignal(SignalName.SetCurrentTabTitle,_changeNameOfTabs);
 	}
 
 	public override Godot.Collections.Array<string> GetNames()
 	{
 		return _Names;
 	}
-
+	
+	public void GetCTabTitle(Godot.Collections.Array<string> names)
+	{
+		_changeNameOfTabs = names;
+	}
+	public new Godot.Collections.Array<string> GetCurrentTabNames()
+	{
+		return _changeNameOfTabs;
+	}
+	
+	public void SetCurrentTabNames(Godot.Collections.Array<string> names)
+	{
+		_changeNameOfTabs = names;
+		EmitSignal(SignalName.SetCurrentTabTitle,names);
+	}
 	public void PushName(string name)
 	{
 		_Names.Add(name);
+//		_DisplayNames.Add(name);
 		EmitTreeChanged();
 	}
 
 	public void InsertNode(int position,Node node)
 	{
 		_Names.Insert(position,node.Name);
+//		_DisplayNames.Insert(position,node.Name);
 		EmitTreeChanged();
 	}
 

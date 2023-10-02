@@ -1,48 +1,81 @@
-[gd_scene load_steps=11 format=3 uid="uid://cwxxcb8vw60g0"]
+[gd_scene load_steps=15 format=3 uid="uid://cwxxcb8vw60g0"]
 
 [ext_resource type="Script" path="res://addons/CSharpDockableContainer/DockableContainer.cs" id="1_17516"]
 [ext_resource type="Script" path="res://addons/CSharpDockableContainer/DockableLayoutPanel.cs" id="2_3imgm"]
 [ext_resource type="Script" path="res://addons/CSharpDockableContainer/DockableLayoutSplit.cs" id="3_5un63"]
 [ext_resource type="Script" path="res://addons/CSharpDockableContainer/DockableLayout.cs" id="4_t04e6"]
 
-[sub_resource type="Resource" id="Resource_tl5jy"]
+[sub_resource type="Resource" id="Resource_cmmkf"]
 resource_name = "Tabs"
 script = ExtResource("2_3imgm")
-Names = ["ColorRect", "ColorRect4"]
+Names = ["ColorRect6"]
+changeNameOfTabs = ["ColorRect6"]
+CurrentTab = 0
+
+[sub_resource type="Resource" id="Resource_x2j2m"]
+resource_name = "Tabs"
+script = ExtResource("2_3imgm")
+Names = ["ColorRect4"]
+changeNameOfTabs = ["ColorRect4"]
+CurrentTab = 0
+
+[sub_resource type="Resource" id="Resource_a2bqq"]
+resource_name = "Split"
+script = ExtResource("3_5un63")
+Direction = 1
+Percent = 0.5
+First = SubResource("Resource_cmmkf")
+Second = SubResource("Resource_x2j2m")
+
+[sub_resource type="Resource" id="Resource_c4ksm"]
+resource_name = "Tabs"
+script = ExtResource("2_3imgm")
+Names = ["gww", "gww2"]
+changeNameOfTabs = ["gw", "gw", "gww", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2", "gww", "gww2"]
 CurrentTab = 1
 
-[sub_resource type="Resource" id="Resource_8ot6u"]
+[sub_resource type="Resource" id="Resource_er0d3"]
 resource_name = "Tabs"
 script = ExtResource("2_3imgm")
-Names = ["ColorRect3"]
-CurrentTab = 0
+Names = ["ColorRect8", "ColorRect2", "ColorRect7"]
+changeNameOfTabs = ["ColorRect8", "ColorRect2", "ColorRect7"]
+CurrentTab = 2
 
-[sub_resource type="Resource" id="Resource_c5ldt"]
-resource_name = "Tabs"
-script = ExtResource("2_3imgm")
-Names = ["ColorRect2"]
-CurrentTab = 0
-
-[sub_resource type="Resource" id="Resource_q1qy4"]
+[sub_resource type="Resource" id="Resource_xxxs3"]
 resource_name = "Split"
 script = ExtResource("3_5un63")
 Direction = 1
-Percent = 0.552147
-First = SubResource("Resource_8ot6u")
-Second = SubResource("Resource_c5ldt")
+Percent = 0.722656
+First = SubResource("Resource_c4ksm")
+Second = SubResource("Resource_er0d3")
 
-[sub_resource type="Resource" id="Resource_xkfri"]
+[sub_resource type="Resource" id="Resource_1mvk1"]
+resource_name = "Tabs"
+script = ExtResource("2_3imgm")
+Names = ["ColorRect3", "ColorRect9"]
+changeNameOfTabs = ["ColorRect3", "ColorRect9"]
+CurrentTab = 1
+
+[sub_resource type="Resource" id="Resource_4bfow"]
 resource_name = "Split"
 script = ExtResource("3_5un63")
-Direction = 1
-Percent = 0.484375
-First = SubResource("Resource_tl5jy")
-Second = SubResource("Resource_q1qy4")
+Direction = 0
+Percent = 0.693095
+First = SubResource("Resource_xxxs3")
+Second = SubResource("Resource_1mvk1")
+
+[sub_resource type="Resource" id="Resource_avc4p"]
+resource_name = "Split"
+script = ExtResource("3_5un63")
+Direction = 0
+Percent = 0.22102
+First = SubResource("Resource_a2bqq")
+Second = SubResource("Resource_4bfow")
 
 [sub_resource type="Resource" id="Resource_2txb1"]
 resource_name = "Layout"
 script = ExtResource("4_t04e6")
-Root = SubResource("Resource_xkfri")
+Root = SubResource("Resource_avc4p")
 HiddenTabs = {}
 
 [node name="Testing" type="Control"]
@@ -65,14 +98,32 @@ grow_vertical = 2
 script = ExtResource("1_17516")
 Layout = SubResource("Resource_2txb1")
 
-[node name="ColorRect" type="ColorRect" parent="DockableContainer"]
+[node name="gww" type="ColorRect" parent="DockableContainer"]
 visible = false
 layout_mode = 2
 
+[node name="gww2" type="ColorRect" parent="DockableContainer"]
+layout_mode = 2
+
+[node name="ColorRect6" type="ColorRect" parent="DockableContainer"]
+layout_mode = 2
+
+[node name="ColorRect7" type="ColorRect" parent="DockableContainer"]
+layout_mode = 2
+
+[node name="ColorRect8" type="ColorRect" parent="DockableContainer"]
+visible = false
+layout_mode = 2
+
+[node name="ColorRect9" type="ColorRect" parent="DockableContainer"]
+layout_mode = 2
+
 [node name="ColorRect2" type="ColorRect" parent="DockableContainer"]
+visible = false
 layout_mode = 2
 
 [node name="ColorRect3" type="ColorRect" parent="DockableContainer"]
+visible = false
 layout_mode = 2
 
 [node name="ColorRect4" type="ColorRect" parent="DockableContainer"]

@@ -454,7 +454,7 @@ public partial class DockableContainer : Container
 			_CurrentSplitIndex = 0;
 			Godot.Collections.Array childrenList = new Godot.Collections.Array();
 			_CalculatePanelAndSplitList(childrenList,_Layout.Root);
-			_FitPanelAndSplitListToRect(childrenList,rect);
+			_FitPanelAndSplitListToRect(childrenList,rect,new Godot.Collections.Array<SplitHandle>(),new Godot.Collections.Array());
 
 			_UntrackChildrenAfter(_PanelContainer,_CurrentPanelIndex);
 			_UntrackChildrenAfter(_SplitContainer,_CurrentSplitIndex);
@@ -546,7 +546,7 @@ public partial class DockableContainer : Container
 		return 0;
 	}
 
-	public void _FitPanelAndSplitListToRect(Godot.Collections.Array panelAndSplitList,Rect2 rect)
+	public void _FitPanelAndSplitListToRect(Godot.Collections.Array panelAndSplitList,Rect2 rect,Godot.Collections.Array<SplitHandle> ps,Godot.Collections.Array count)
 	{
 		if (panelAndSplitList.Count != 0)
 		{
@@ -558,10 +558,56 @@ public partial class DockableContainer : Container
 		}
 		else if (control is SplitHandle)
 		{
-			Godot.Collections.Dictionary<string, Rect2> splitRects = (control as SplitHandle).GetSplitRects(rect);
+			var splitRects = new Godot.Collections.Dictionary<string,Rect2>();
+			if (ps.Count >= 1 && (ps[ps.Count-1] as SplitHandle).LayoutSplit.First == (control as SplitHandle).LayoutSplit && ps[ps.Count-1].Dragging && ps[ps.Count-1].LayoutSplit.IsHorizontal() == (control as SplitHandle).LayoutSplit.IsHorizontal())
+			{
+				var no = (control as SplitHandle).LayoutSplit;
+				while (no != null)
+				{
+					if (no.Second != null && no.Second is DockableLayoutSplit)
+					{
+						no = (DockableLayoutSplit)no.Second;
+						count.Add("second");
+					}
+					else
+					{
+						no = null;
+					}
+				}
+				splitRects = (control as SplitHandle).GetSplitRects(rect,"second");
+			}
+			else if(ps.Count >= 1 && (ps[ps.Count-1] as SplitHandle).LayoutSplit.Second == (control as SplitHandle).LayoutSplit && ps[ps.Count-1].Dragging && ps[ps.Count-1].LayoutSplit.IsHorizontal() == (control as SplitHandle).LayoutSplit.IsHorizontal())
+			{
+				var no = (control as SplitHandle).LayoutSplit;
+				while (no != null)
+				{
+					if (no.Second != null && no.Second is DockableLayoutSplit)
+					{
+						no = (DockableLayoutSplit)no.First;
+						count.Add("first");
+					}
+					else
+					{
+						no = null;
+					}
+				}
+				splitRects = (control as SplitHandle).GetSplitRects(rect,"first");
+			}
+			else if (ps.Count >= 1 && count.Count >= 1 && ps[0].Dragging && ps[ps.Count-1].LayoutSplit.IsHorizontal() == (control as SplitHandle).LayoutSplit.IsHorizontal())
+			{
+				splitRects = (control as SplitHandle).GetSplitRects(rect,"first");
+			}
+			else
+			{
+				splitRects = (control as SplitHandle).GetSplitRects(rect);
+			}
+			if ((control as SplitHandle).LayoutSplit.First is DockableLayoutSplit || (control as SplitHandle).LayoutSplit.Second is DockableLayoutSplit)
+			{
+				ps.Add((SplitHandle)control);
+			}
 			_SplitContainer.FitChildInRect(control,splitRects["self"]);
-			_FitPanelAndSplitListToRect(panelAndSplitList,splitRects["first"]);
-			_FitPanelAndSplitListToRect(panelAndSplitList,splitRects["second"]);
+			_FitPanelAndSplitListToRect(panelAndSplitList,splitRects["first"],ps,count);
+			_FitPanelAndSplitListToRect(panelAndSplitList,splitRects["second"],ps,count);
 		}
 		}
 

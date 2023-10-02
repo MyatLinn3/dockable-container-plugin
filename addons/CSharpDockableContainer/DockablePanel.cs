@@ -15,6 +15,8 @@ public partial class DockablePanel : TabContainer
 	}
 
 	public DockableLayoutPanel _Leaf;
+	
+	public Godot.Collections.Array<string> displayNames = new Godot.Collections.Array<string>();
 	public override void _Ready()
 	{
 		DragToRearrangeEnabled = true;
@@ -25,6 +27,7 @@ public partial class DockablePanel : TabContainer
 		ActiveTabRearranged += _OnTabChanged;
 		TabSelected += _OnTabSelected;
 		TabChanged += _OnTabChanged;
+
 	//	Connect("active_tab_rearranged",this,"_OnTabChanged");
 //		Connect("tab_selected",this,"_OnTabSelected");
 //		Connect("tab_changed",this,"_OnTabChanged");
@@ -60,11 +63,17 @@ public partial class DockablePanel : TabContainer
 		{
 			GD.PrintErr("FixMe!");
 		}
+		GD.Print(nodes.Count);
 		for (int i =0;i < nodes.Count;i++)
 		{
 			DockableReferenceControl refControl = GetChild(i) as DockableReferenceControl;
 			refControl.ReferenceTo = nodes[i];
-			SetTabTitle(i,nodes[i].Name);
+			displayNames = newLeaf.changeNameOfTabs;
+			if (displayNames.Count != nodes.Count)
+			{
+				displayNames.Add(nodes[i].Name);
+			}
+			SetTabTitle(i,displayNames[i]);
 		}
 		SetLeaf(newLeaf);
 	}
@@ -75,13 +84,14 @@ public partial class DockablePanel : TabContainer
 		return new Rect2(Position + control.Position,control.Size);
 	}
 
-	public void SetLeaf(DockableLayoutPanel value)
+	public void SetLeaf(DockableLayoutPanel @value)
 	{
-		if (GetTabCount() > 0 && value != null)
+		if (GetTabCount() > 0 && @value != null)
 		{
-			CurrentTab = Mathf.Clamp(value.CurrentTab,0,GetTabCount()-1);
+			CurrentTab = Mathf.Clamp(@value.CurrentTab,0,GetTabCount()-1);
 		}
 		_Leaf = value;
+		_Leaf.SetCurrentTabTitle += _SetCurrentTabTitle;
 	}
 
 	public DockableLayoutPanel GetLeaf()
@@ -99,9 +109,22 @@ public partial class DockablePanel : TabContainer
 		if (_Leaf != null)
 		{
 			_Leaf.CurrentTab = (int)tab;
+			_Leaf.EmitSignal("GetCurrentTabTitle",displayNames);
 		}
 	}
 
+	public void _SetCurrentTabTitle(Godot.Collections.Array<string> names)
+	{
+		if (_Leaf != null)
+		{
+			displayNames = names;
+			for(int i=0;i < GetTabCount();i++)
+			{
+				SetTabTitle(CurrentTab,names[i]);
+			}
+		}
+
+	}
 	public void _OnTabChanged(long tab)
 	{
 		if (_Leaf == null)
