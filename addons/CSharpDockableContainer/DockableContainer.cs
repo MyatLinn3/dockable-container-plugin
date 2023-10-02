@@ -589,7 +589,7 @@ public partial class DockableContainer : Container
 				var splitRects = new Godot.Collections.Dictionary<string,Rect2>();
 				switch (ps.Count)
 				{
-					case >= 1 when (ps[ps.Count-1] as SplitHandle).LayoutSplit.First == handle.LayoutSplit && ps[ps.Count-1].Dragging && ps[ps.Count-1].LayoutSplit.IsHorizontal() == handle.LayoutSplit.IsHorizontal():
+					case >= 1 when (ps[^1] as SplitHandle).LayoutSplit.First == handle.LayoutSplit && ps[^1].Dragging && ps[^1].LayoutSplit.IsHorizontal() == handle.LayoutSplit.IsHorizontal():
 					{
 						var no = handle.LayoutSplit;
 						while (no != null)
@@ -607,7 +607,7 @@ public partial class DockableContainer : Container
 						splitRects = handle.GetSplitRects(rect,"second");
 						break;
 					}
-					case >= 1 when (ps[ps.Count-1] as SplitHandle).LayoutSplit.Second == handle.LayoutSplit && ps[ps.Count-1].Dragging && ps[ps.Count-1].LayoutSplit.IsHorizontal() == handle.LayoutSplit.IsHorizontal():
+					case >= 1 when (ps[^1] as SplitHandle).LayoutSplit.Second == handle.LayoutSplit && ps[^1].Dragging && ps[^1].LayoutSplit.IsHorizontal() == handle.LayoutSplit.IsHorizontal():
 					{
 						var no = handle.LayoutSplit;
 						while (no != null)
@@ -625,7 +625,7 @@ public partial class DockableContainer : Container
 						splitRects = handle.GetSplitRects(rect,"first");
 						break;
 					}
-					case >= 1 when count.Count >= 1 && ps[0].Dragging && ps[ps.Count-1].LayoutSplit.IsHorizontal() == handle.LayoutSplit.IsHorizontal():
+					case >= 1 when count.Count >= 1 && ps[0].Dragging && ps[^1].LayoutSplit.IsHorizontal() == handle.LayoutSplit.IsHorizontal():
 						splitRects = handle.GetSplitRects(rect,"first");
 						break;
 					default:
