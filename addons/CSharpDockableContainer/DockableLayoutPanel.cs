@@ -7,7 +7,7 @@ public partial class DockableLayoutPanel : DockableLayoutNode
 	[Export]
 	public Godot.Collections.Array<string> Names
 	{
-		get{return GetNames();}
+		get => GetNames();
 		set{_Names = value;
 			EmitTreeChanged();}
 	}
@@ -15,8 +15,8 @@ public partial class DockableLayoutPanel : DockableLayoutNode
 	[Export]
 	public Godot.Collections.Array<string> changeNameOfTabs
 	{
-		get{return GetCurrentTabNames();}
-		set{SetCurrentTabNames(value);}
+		get => GetCurrentTabNames();
+		set => SetCurrentTabNames(value);
 	}
 
 	[Export]

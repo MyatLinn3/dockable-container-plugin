@@ -6,7 +6,7 @@ public partial class DockableReferenceControl : Container
 {
 	public Control ReferenceTo
 	{
-		get{return _ReferenceTo;}
+		get => _ReferenceTo;
 		set
 		{
 			if (_ReferenceTo != value)

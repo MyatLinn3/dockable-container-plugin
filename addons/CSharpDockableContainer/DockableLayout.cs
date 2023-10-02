@@ -12,14 +12,14 @@ public partial class DockableLayout : Resource
 	[Export]
 	public DockableLayoutNode Root
 	{
-		get{return _Root;}
-		set{SetRoot(value);}
+		get => _Root;
+		set => SetRoot(value);
 	}
 
 	[Export]
 	public Godot.Collections.Dictionary HiddenTabs
 	{
-		get{return _HiddenTabs;}
+		get => _HiddenTabs;
 		set
 		{
 			if (value != _HiddenTabs)

@@ -8,7 +8,7 @@ public partial class DockableContainer : Container
 	[Export]
 	public TabBar.AlignmentMode TabAlignment 
 	{
-		get{return _TabAlign;}
+		get => _TabAlign;
 		set
 		{
 			_TabAlign = value;
@@ -23,7 +23,7 @@ public partial class DockableContainer : Container
 	[Export]
 	public bool UseHiddenTabsForMinSize
 	{
-		get{return _UseHiddenTabsForMinSize;}
+		get => _UseHiddenTabsForMinSize;
 		set
 		{
 			_UseHiddenTabsForMinSize = value;
@@ -38,7 +38,7 @@ public partial class DockableContainer : Container
 	[Export]
 	public bool TabsVisible
 	{
-		get{return _TabsVisible;}
+		get => _TabsVisible;
 		set
 		{
 			_TabsVisible = value;
@@ -57,11 +57,8 @@ public partial class DockableContainer : Container
 	[Export]
 	public DockableLayout Layout
 	{
-		get{return _Layout;}
-		set
-		{
-			SetLayout(value);
-		}
+		get => _Layout;
+		set => SetLayout(value);
 	}
 
 	[Export]

@@ -9,29 +9,29 @@ public partial class DockableLayoutSplit : DockableLayoutNode
 	[Export]
 	public int Direction
 	{
-		get{return GetDirection();}
-		set{SetDirection(value);}
+		get => GetDirection();
+		set => SetDirection(value);
 	}
 
 	[Export(PropertyHint.Range, "0,1")]
 	public float Percent
 	{
-		get{return GetPercent();}
-		set{SetPercent(value);}
+		get => GetPercent();
+		set => SetPercent(value);
 	}
 	
 	[Export]
 	public DockableLayoutNode First
 	{
-		get{return GetFirst();}
-		set{SetFirst(value);}
+		get => GetFirst();
+		set => SetFirst(value);
 	}
 	
 	[Export]
 	public DockableLayoutNode Second
 	{
-		get{return GetSecond();}
-		set{SetSecond(value);}
+		get => GetSecond();
+		set => SetSecond(value);
 	}
 
 

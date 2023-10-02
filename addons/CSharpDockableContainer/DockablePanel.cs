@@ -10,8 +10,8 @@ public partial class DockablePanel : TabContainer
 
 	public DockableLayoutPanel Leaf
 	{
-		get{return GetLeaf();}
-		set{SetLeaf(value);}
+		get => GetLeaf();
+		set => SetLeaf(value);
 	}
 
 	public DockableLayoutPanel _Leaf;
