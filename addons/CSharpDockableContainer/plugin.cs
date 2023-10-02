@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 [Tool]
 public partial class new_script : EditorPlugin

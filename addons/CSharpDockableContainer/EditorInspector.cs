@@ -1,6 +1,5 @@
 #if TOOLS
 using Godot;
-using System;
 
 public partial class EditorInspector : EditorInspectorPlugin
 {
